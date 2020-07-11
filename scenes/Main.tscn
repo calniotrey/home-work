@@ -178,5 +178,5 @@ margin_bottom = 292.0
 texture = ExtResource( 4 )
 expand = true
 stretch_mode = 6
-[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/DiffGraph/Line2D" method="_on_Root_resized"]
 [connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/TotalGraph/Line2D" method="_on_Root_resized"]
+[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/DiffGraph/Line2D" method="_on_Root_resized"]
