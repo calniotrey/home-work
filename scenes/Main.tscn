@@ -8,7 +8,7 @@
 [ext_resource path="res://game_theme.tres" type="Theme" id=6]
 [ext_resource path="res://panel_style.tres" type="StyleBox" id=7]
 
-[sub_resource type="StyleBoxFlat" id=6]
+[sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.298039, 0.196078, 0.321569, 1 )
 
 [sub_resource type="StyleBoxEmpty" id=2]
@@ -88,7 +88,7 @@ mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
-custom_styles/panel = SubResource( 6 )
+custom_styles/panel = SubResource( 1 )
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer/Top/MainDisplay"]
 margin_right = 497.0
@@ -176,32 +176,41 @@ margin_bottom = 588.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Options" type="VBoxContainer" parent="VBoxContainer/Bottom"]
-margin_right = 292.0
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/Bottom"]
+margin_right = 312.0
+margin_bottom = 236.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.1
+theme = ExtResource( 6 )
+custom_styles/panel = ExtResource( 7 )
+
+[node name="Options" type="VBoxContainer" parent="VBoxContainer/Bottom/PanelContainer"]
+margin_right = 312.0
 margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 6 )
 
-[node name="Meeting" type="Button" parent="VBoxContainer/Bottom/Options"]
+[node name="Meeting" type="Button" parent="VBoxContainer/Bottom/PanelContainer/Options"]
 margin_top = 33.0
-margin_right = 292.0
+margin_right = 312.0
 margin_bottom = 57.0
 size_flags_vertical = 6
 text = "Start personal meeting"
 
-[node name="ChangeTask" type="VBoxContainer" parent="VBoxContainer/Bottom/Options"]
+[node name="ChangeTask" type="VBoxContainer" parent="VBoxContainer/Bottom/PanelContainer/Options"]
 margin_top = 94.0
-margin_right = 292.0
+margin_right = 312.0
 margin_bottom = 142.0
 
-[node name="CurrentTask" type="HBoxContainer" parent="VBoxContainer/Bottom/Options/ChangeTask"]
-margin_right = 292.0
+[node name="CurrentTask" type="HBoxContainer" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask"]
+margin_right = 312.0
 margin_bottom = 20.0
 size_flags_vertical = 6
 
-[node name="Label" type="Label" parent="VBoxContainer/Bottom/Options/ChangeTask/CurrentTask"]
-margin_right = 144.0
+[node name="Label" type="Label" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/CurrentTask"]
+margin_right = 154.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -209,9 +218,9 @@ text = "Current task: "
 align = 1
 valign = 1
 
-[node name="TaskName" type="Label" parent="VBoxContainer/Bottom/Options/ChangeTask/CurrentTask"]
-margin_left = 148.0
-margin_right = 292.0
+[node name="TaskName" type="Label" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/CurrentTask"]
+margin_left = 158.0
+margin_right = 312.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -219,14 +228,14 @@ text = "unkown"
 align = 1
 valign = 1
 
-[node name="ChangeTask" type="HBoxContainer" parent="VBoxContainer/Bottom/Options/ChangeTask"]
+[node name="ChangeTask" type="HBoxContainer" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask"]
 margin_top = 24.0
-margin_right = 292.0
+margin_right = 312.0
 margin_bottom = 48.0
 size_flags_vertical = 6
 
-[node name="Label" type="Label" parent="VBoxContainer/Bottom/Options/ChangeTask/ChangeTask"]
-margin_right = 144.0
+[node name="Label" type="Label" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/ChangeTask"]
+margin_right = 154.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -234,9 +243,9 @@ text = "Force  to work on"
 align = 1
 valign = 1
 
-[node name="Switch" type="OptionButton" parent="VBoxContainer/Bottom/Options/ChangeTask/ChangeTask"]
-margin_left = 148.0
-margin_right = 292.0
+[node name="Switch" type="OptionButton" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/ChangeTask"]
+margin_left = 158.0
+margin_right = 312.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "choose one"
@@ -247,23 +256,23 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Flame" type="Button" parent="VBoxContainer/Bottom/Options"]
+[node name="Flame" type="Button" parent="VBoxContainer/Bottom/PanelContainer/Options"]
 margin_top = 179.0
-margin_right = 292.0
+margin_right = 312.0
 margin_bottom = 203.0
 size_flags_vertical = 6
 text = "Flame coworker"
 
 [node name="Indicators" type="CenterContainer" parent="VBoxContainer/Bottom"]
-margin_left = 296.0
-margin_right = 705.0
+margin_left = 316.0
+margin_right = 714.0
 margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 1.4
 
 [node name="RedButton" type="PanelContainer" parent="VBoxContainer/Bottom"]
-margin_left = 709.0
+margin_left = 718.0
 margin_right = 1003.0
 margin_bottom = 236.0
 size_flags_horizontal = 3
@@ -271,7 +280,7 @@ size_flags_vertical = 3
 custom_styles/panel = SubResource( 5 )
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/Bottom/RedButton"]
-margin_right = 294.0
+margin_right = 285.0
 margin_bottom = 236.0
 texture = ExtResource( 4 )
 expand = true
