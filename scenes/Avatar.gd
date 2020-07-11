@@ -1,5 +1,6 @@
 extends PanelContainer
 
+
 func _ready():
 	generate_face()
 
@@ -12,6 +13,7 @@ func generate_face():
 	
 	var k = randi() % len(eyes)
 	eyes[k].visible = true
+
 
 func copy(avatarToCopy):
 	var eyes = $Eyes.get_children()
