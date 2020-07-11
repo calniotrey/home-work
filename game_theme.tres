@@ -3,6 +3,7 @@
 [ext_resource path="res://Fragmentcore.otf" type="DynamicFontData" id=1]
 [ext_resource path="res://normal_button_style.tres" type="StyleBox" id=2]
 [ext_resource path="res://empty.png" type="Texture" id=3]
+[ext_resource path="res://panel_style.tres" type="StyleBox" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 font_data = ExtResource( 1 )
@@ -17,10 +18,6 @@ bg_color = Color( 0.45098, 0.305882, 0.482353, 1 )
 [sub_resource type="DynamicFont" id=3]
 size = 20
 font_data = ExtResource( 1 )
-
-[sub_resource type="StyleBoxFlat" id=4]
-bg_color = Color( 0.164706, 0.109804, 0.176471, 1 )
-border_color = Color( 0.211765, 0.2, 0.215686, 1 )
 
 [sub_resource type="DynamicFont" id=5]
 font_data = ExtResource( 1 )
@@ -98,7 +95,8 @@ OptionButton/styles/focus = null
 OptionButton/styles/hover = null
 OptionButton/styles/normal = null
 OptionButton/styles/pressed = null
-Panel/styles/panel = SubResource( 4 )
+Panel/styles/panel = ExtResource( 4 )
+PanelContainer/styles/panel = null
 PopupMenu/colors/font_color = Color( 0.88, 0.88, 0.88, 1 )
 PopupMenu/colors/font_color_accel = Color( 0.7, 0.7, 0.7, 0.8 )
 PopupMenu/colors/font_color_disabled = Color( 0.4, 0.4, 0.4, 0.8 )
@@ -136,3 +134,4 @@ TabContainer/styles/panel = SubResource( 6 )
 TabContainer/styles/tab_bg = SubResource( 7 )
 TabContainer/styles/tab_disabled = SubResource( 8 )
 TabContainer/styles/tab_fg = SubResource( 9 )
+VBoxContainer/constants/separation = 4

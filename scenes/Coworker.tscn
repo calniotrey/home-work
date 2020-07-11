@@ -1,13 +1,16 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scripts/Coworker.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Avatar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://game_theme.tres" type="Theme" id=3]
+[ext_resource path="res://panel_style.tres" type="StyleBox" id=4]
 
 [node name="Coworker" type="PanelContainer"]
 margin_right = 250.0
 margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource( 3 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -48,6 +51,8 @@ margin_left = 7.0
 margin_top = 7.0
 margin_right = 243.0
 margin_bottom = 229.0
+theme = ExtResource( 3 )
+custom_styles/panel = ExtResource( 4 )
 [connection signal="gui_input" from="." to="." method="_on_Coworker_gui_input"]
 [connection signal="timeout" from="SpeakTimer" to="." method="_on_speaktimer_timeout"]
 [connection signal="timeout" from="BubbleCanvas/Bubble/Timer" to="." method="_on_bubble_timer_timeout"]
