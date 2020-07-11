@@ -3,7 +3,7 @@ extends PanelContainer
 signal selected_signal(value)
 
 func _ready():
-	$SpeakTimer.wait_time = randf() * 4
+	$SpeakTimer.wait_time = randf() * 400
 	$SpeakTimer.start()
 
 
@@ -32,3 +32,5 @@ func _on_Coworker_gui_input(event):
 
 func get_avatar():
 	return $Avatar
+
+

@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scripts/GameLogic.gd" type="Script" id=1]
 [ext_resource path="res://scripts/TotalGraph.gd" type="Script" id=2]
 [ext_resource path="res://scripts/DiffGraph.gd" type="Script" id=3]
 [ext_resource path="res://images/button-red.png" type="Texture" id=4]
+[ext_resource path="res://scenes/Avatar.tscn" type="PackedScene" id=5]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -13,6 +14,10 @@ Color/colors/Color = Color( 1, 0, 0, 1 )
 [sub_resource type="StyleBoxEmpty" id=3]
 
 [sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="Theme" id=6]
+
+[sub_resource type="StyleBoxEmpty" id=7]
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
@@ -130,47 +135,48 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Profil" type="PanelContainer" parent="VBoxContainer/Bottom"]
-margin_right = 198.0
+margin_right = 141.0
 margin_bottom = 292.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_styles/panel = SubResource( 4 )
 
-[node name="ProfilAvatar" type="TextureRect" parent="VBoxContainer/Bottom/Profil"]
-margin_right = 198.0
+[node name="Avatar" parent="VBoxContainer/Bottom/Profil" instance=ExtResource( 5 )]
+visible = false
+margin_right = 141.0
 margin_bottom = 292.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-stretch_mode = 6
+theme = SubResource( 6 )
+custom_styles/panel = SubResource( 7 )
 
 [node name="Indicators" type="CenterContainer" parent="VBoxContainer/Bottom"]
-margin_left = 202.0
-margin_right = 400.0
+margin_left = 145.0
+margin_right = 286.0
 margin_bottom = 292.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Options" type="CenterContainer" parent="VBoxContainer/Bottom"]
-margin_left = 404.0
-margin_right = 800.0
+margin_left = 290.0
+margin_right = 573.0
 margin_bottom = 292.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 
 [node name="RedButton" type="PanelContainer" parent="VBoxContainer/Bottom"]
-margin_left = 804.0
+margin_left = 577.0
 margin_right = 1003.0
 margin_bottom = 292.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
 custom_styles/panel = SubResource( 5 )
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/Bottom/RedButton"]
-margin_right = 199.0
+margin_right = 426.0
 margin_bottom = 292.0
 texture = ExtResource( 4 )
 expand = true
 stretch_mode = 6
-[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/TotalGraph/Line2D" method="_on_Root_resized"]
 [connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/DiffGraph/Line2D" method="_on_Root_resized"]
+[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/TotalGraph/Line2D" method="_on_Root_resized"]
