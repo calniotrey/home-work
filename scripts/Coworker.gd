@@ -7,7 +7,7 @@ func _ready():
 
 
 func speak(text):
-	$BubbleCanvas.offset = rect_position + rect_size/2
+	$BubbleCanvas.offset = rect_global_position + rect_size/2
 	$BubbleCanvas/Bubble/Text.text = text
 	$BubbleCanvas/Bubble/Timer.start()
 	$BubbleCanvas/Bubble.visible = true

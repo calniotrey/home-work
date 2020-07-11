@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://scripts/TotalGraph.gd" type="Script" id=1]
-[ext_resource path="res://scripts/DiffGraph.gd" type="Script" id=2]
-[ext_resource path="res://scripts/GameLogic.gd" type="Script" id=3]
+[ext_resource path="res://scripts/GameLogic.gd" type="Script" id=1]
+[ext_resource path="res://scripts/TotalGraph.gd" type="Script" id=2]
+[ext_resource path="res://scripts/DiffGraph.gd" type="Script" id=3]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -14,7 +14,7 @@ Color/colors/Color = Color( 1, 0, 0, 1 )
 [node name="Root" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 3 )
+script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -41,7 +41,7 @@ margin_bottom = 292.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Left" type="GridContainer" parent="VBoxContainer/Top"]
+[node name="LeftCoworkerGrid" type="GridContainer" parent="VBoxContainer/Top"]
 margin_right = 248.0
 margin_bottom = 292.0
 size_flags_horizontal = 3
@@ -62,7 +62,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Total Graph" type="PanelContainer" parent="VBoxContainer/Top/TabContainer"]
+[node name="TotalGraph" type="PanelContainer" parent="VBoxContainer/Top/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 24.0
@@ -71,7 +71,7 @@ size_flags_vertical = 3
 theme = SubResource( 2 )
 custom_styles/panel = SubResource( 3 )
 
-[node name="Graph" type="ColorRect" parent="VBoxContainer/Top/TabContainer/Total Graph"]
+[node name="Graph" type="ColorRect" parent="VBoxContainer/Top/TabContainer/TotalGraph"]
 margin_right = 497.0
 margin_bottom = 268.0
 size_flags_horizontal = 3
@@ -81,12 +81,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Line2D" type="Line2D" parent="VBoxContainer/Top/TabContainer/Total Graph"]
+[node name="Line2D" type="Line2D" parent="VBoxContainer/Top/TabContainer/TotalGraph"]
 width = 3.0
 default_color = Color( 0.976471, 1, 0.305882, 1 )
-script = ExtResource( 1 )
+script = ExtResource( 2 )
 
-[node name="Diff Graph" type="PanelContainer" parent="VBoxContainer/Top/TabContainer"]
+[node name="DiffGraph" type="PanelContainer" parent="VBoxContainer/Top/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -96,7 +96,7 @@ size_flags_vertical = 3
 theme = SubResource( 2 )
 custom_styles/panel = SubResource( 3 )
 
-[node name="Graph" type="ColorRect" parent="VBoxContainer/Top/TabContainer/Diff Graph"]
+[node name="Graph" type="ColorRect" parent="VBoxContainer/Top/TabContainer/DiffGraph"]
 margin_right = 497.0
 margin_bottom = 268.0
 size_flags_horizontal = 3
@@ -106,15 +106,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Line2D" type="Line2D" parent="VBoxContainer/Top/TabContainer/Diff Graph"]
+[node name="Line2D" type="Line2D" parent="VBoxContainer/Top/TabContainer/DiffGraph"]
 width = 3.0
-script = ExtResource( 2 )
+script = ExtResource( 3 )
 
-[node name="Right" type="GridContainer" parent="VBoxContainer/Top"]
+[node name="RightCoworkerGrid" type="GridContainer" parent="VBoxContainer/Top"]
 margin_left = 753.0
 margin_right = 1003.0
 margin_bottom = 292.0
 size_flags_horizontal = 3
+columns = 2
 
 [node name="Bottom" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 296.0
@@ -143,5 +144,5 @@ margin_bottom = 292.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
-[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/Diff Graph/Line2D" method="_on_Root_resized"]
-[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/Total Graph/Line2D" method="_on_Root_resized"]
+[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/TotalGraph/Line2D" method="_on_Root_resized"]
+[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/DiffGraph/Line2D" method="_on_Root_resized"]

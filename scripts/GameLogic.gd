@@ -1,5 +1,6 @@
 extends Control
 
+onready var Coworker = preload("res://scenes/Coworker.tscn")
 
 var diffGraph
 var totalGraph
@@ -17,12 +18,19 @@ var productionSinceLastTimeUnit = 0.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	diffGraph = $"VBoxContainer/Top/TabContainer/Diff Graph/Line2D"
+	diffGraph = $VBoxContainer/Top/TabContainer/DiffGraph/Line2D
 	diffGraph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
 	diffGraph.MAX_VALUE = TARGET_PRODUCTION / MAX_TIME_UNIT / 2.0
-	totalGraph = $"VBoxContainer/Top/TabContainer/Total Graph/Line2D"
+	totalGraph = $VBoxContainer/Top/TabContainer/TotalGraph/Line2D
 	totalGraph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
 	totalGraph.MAX_VALUE = TARGET_PRODUCTION
+	
+	# Init all the coworkers
+	var grids = [$VBoxContainer/Top/LeftCoworkerGrid, $VBoxContainer/Top/RightCoworkerGrid]
+	for grid in grids:
+		for i in range(4):
+			var coworker = Coworker.instance()
+			grid.add_child(coworker)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
