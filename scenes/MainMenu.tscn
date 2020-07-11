@@ -71,10 +71,9 @@ custom_fonts/font = SubResource( 3 )
 toggle_mode = false
 text = "Difficulty"
 align = 1
-items = [ "Difficulty", null, true, 0, null, "Easy", null, false, 1, null, "Medium", null, false, 2, null, "Hard", null, false, 3, null ]
+items = [ "Easy", null, false, 0, null, "Medium", null, false, 1, null, "Hard", null, false, 2, null ]
 selected = 0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="pressed" from="Panel/StartGame" to="." method="_on_StartGame_pressed"]
-[connection signal="item_selected" from="Panel/Difficulty" to="." method="_on_Difficulty_item_selected"]
