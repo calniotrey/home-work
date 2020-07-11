@@ -37,11 +37,11 @@ func _process(delta):
 		if currentProduction >= totalGraph.MAX_VALUE:
 			print("VICTORY")
 			stop = true
-			# TODO : change scene to victory sceen
+			get_tree().change_scene("res://scenes/Victory.tscn")
 		elif currentTimeUnit >= diffGraph.MAX_NUMBER_OF_POINTS - 1:
 			print("DEFEAT")
 			stop = true
-			# TODO : change to defeat screen
+			get_tree().change_scene("res://scenes/Defeat.tscn")
 		totalGraph.addPoint(currentProduction)
 		productionSinceLastTimeUnit = min(diffGraph.MAX_VALUE, max(0, productionSinceLastTimeUnit))
 		diffGraph.addPoint(productionSinceLastTimeUnit)
