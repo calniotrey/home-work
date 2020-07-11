@@ -8,13 +8,13 @@
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="Theme" id=3]
+
 [sub_resource type="StyleBoxEmpty" id=4]
 
-[sub_resource type="Theme" id=5]
-
-[sub_resource type="StyleBoxEmpty" id=6]
-
-[sub_resource type="StyleBoxEmpty" id=7]
+[sub_resource type="StyleBoxEmpty" id=5]
 
 [node name="Root" type="Control"]
 anchor_right = 1.0
@@ -125,7 +125,7 @@ margin_bottom = 333.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_styles/panel = SubResource( 4 )
+custom_styles/panel = SubResource( 2 )
 
 [node name="FadeTimer" type="Timer" parent="VBoxContainer/Top/MainDisplay/CurrentWorker"]
 wait_time = 3.0
@@ -136,8 +136,8 @@ one_shot = true
 [node name="Avatar" parent="VBoxContainer/Top/MainDisplay/CurrentWorker" instance=ExtResource( 5 )]
 margin_right = 483.0
 margin_bottom = 326.0
-theme = SubResource( 5 )
-custom_styles/panel = SubResource( 6 )
+theme = SubResource( 3 )
+custom_styles/panel = SubResource( 4 )
 
 [node name="RightCoworkerGrid" type="GridContainer" parent="VBoxContainer/Top"]
 margin_left = 753.0
@@ -262,7 +262,7 @@ margin_right = 1003.0
 margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_styles/panel = SubResource( 7 )
+custom_styles/panel = SubResource( 5 )
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/Bottom/RedButton"]
 margin_right = 294.0
