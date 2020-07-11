@@ -1,0 +1,76 @@
+0 < skill < 1
+
+delta_time: time since last interaction
+
+production_tick = rand(0.8, 1) * PROD_CST * managed_factor * skill * task_type * product(tmp_modifs)
+
+relationship = number in [0; 100] with all the other coworkers
+
+----
+
+managed_factor: mngt_func(delta_time)
+
+default mngt_func: 1/2 * (exp(-delta_time) - 1)
+
+
+character traits:
+- autonomous: mngt_func: 1/2 * (2 - exp(-delta_time))
+- slacker: mngt_func: exp(-3 * delta_time)
+- annoying: adds "disturbed" to random coworker at P(annoying) = AnnoyingCst (in [0;1])
+- ambitious: resets delta_time of coworkers left unchecked by the player
+- hates being managed: c.f. autonomous' mngt_func
+- gamer: triggers "playing" at P(playing) = exp(-delta_time). Can trigger 'playing' on other gamers.
+
+----
+
+task_types: documentation, refactor, new feature, architecture, bug fix
+- refactoring: 0.1
+- documentation: 0.01
+- bug_fix: 0.8
+- new_feature: 1
+- architecture: 0.1
+
+----
+
+modificateurs temporaires:
+
+- meeting: 0 if t - last_meeting_start < SOME_THRESHOLD
+- disturbed: 0.8 with P_STAYS_DISTURBED
+- satisfied: 1.2 with P_STAYS_SATISFIED
+- angry: 0.5 with P_STAYS_ANGRY
+- playing: 0 with P_KEEPS_PLAYING
+- (shared) past_refactor: 1 + exp(-1 * (t - t_past_refactor) / time_spent_refactoring)
+- (shared) past_documentation: 1 + 0.5 * exp(-1 * (t - t_past_documentation) / time_spent_documenting)
+- (shared) past_architecture: 1 + 0.5 * min(1, exp(- (threshold - time_spent_on_archi)))
+- (shared) bugs: exp(-1 * (t - t_past_bug_fix) / time_spent_on_bug_fix)
+- (shared) synergy: exp(- (t - t_last_meeting))
+
+---
+
+shitty indicators:
+
+- number of lines of code: (production_tick / task_type) * rand(0.5, 1.5) * task_type
+  + documentation: 2
+  + refactor: 1.2
+  + new feature: 1
+  + architecture: 0.25
+
+- number of commits: nbr_lines_of_code * rand(0.9, 1.1) * task_type
+  + documentation: 0.4
+  + refactor: 1.2
+  + new_feature: 1
+  + bug_fix: 2
+
+- task type
+
+- relationship * rand(0.7, 1.3) with random coworker
+
+---
+
+actions:
+
+- 1:1 meeting (Get indicators)
+- organize meeting: lasts MEETING_DURATION time, applies synergy
+- flame coworker:
+  + P_LIKES_FLAME to apply satisfied to coworkers with relationship < REL_NEG_THRESHOLD with target
+  + P_HATES_FLAME to apply angry to coworkers with relationship > REL_POS_THRESHOLD with target
