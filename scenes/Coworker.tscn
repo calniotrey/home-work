@@ -52,5 +52,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 2 )
 stretch_mode = 6
+[connection signal="gui_input" from="." to="." method="_on_Coworker_gui_input"]
 [connection signal="timeout" from="SpeakTimer" to="." method="_on_speaktimer_timeout"]
 [connection signal="timeout" from="BubbleCanvas/Bubble/Timer" to="." method="_on_bubble_timer_timeout"]

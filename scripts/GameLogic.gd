@@ -2,6 +2,8 @@ extends Control
 
 onready var Coworker = preload("res://scenes/Coworker.tscn")
 
+var profilAvatar
+
 var diffGraph
 var totalGraph
 
@@ -24,12 +26,14 @@ func _ready():
 	totalGraph = $VBoxContainer/Top/TabContainer/TotalGraph/Line2D
 	totalGraph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
 	totalGraph.MAX_VALUE = TARGET_PRODUCTION
+	profilAvatar = $VBoxContainer/Bottom/Profil/ProfilAvatar
 	
 	# Init all the coworkers
 	var grids = [$VBoxContainer/Top/LeftCoworkerGrid, $VBoxContainer/Top/RightCoworkerGrid]
 	for grid in grids:
 		for i in range(4):
 			var coworker = Coworker.instance()
+			coworker.connect("selected_signal", self, "coworkerSelected")
 			grid.add_child(coworker)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -54,3 +58,6 @@ func _process(delta):
 		productionSinceLastTimeUnit = min(diffGraph.MAX_VALUE, max(0, productionSinceLastTimeUnit))
 		diffGraph.addPoint(productionSinceLastTimeUnit)
 		productionSinceLastTimeUnit = 0
+
+func coworkerSelected(coworker):
+	profilAvatar.texture = coworker.get_avatar().texture

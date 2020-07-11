@@ -1,5 +1,6 @@
 extends PanelContainer
 
+signal selected_signal(value)
 
 func _ready():
 	$SpeakTimer.wait_time = randf() * 4
@@ -23,3 +24,11 @@ func _on_bubble_timer_timeout():
 
 func _on_speaktimer_timeout():
 	speak("Please manage me " + self.name)
+
+
+func _on_Coworker_gui_input(event):
+	if event is InputEventMouseButton and event.is_pressed():
+		emit_signal("selected_signal", self)
+
+func get_avatar():
+	return $Avatar
