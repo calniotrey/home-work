@@ -29,12 +29,12 @@ task_types: documentation, refactor, new feature, architecture, bug fix
 - bug_fix: 0.8
 - new_feature: 1
 - architecture: 0.1
+- meeting: 0.001
 
 ----
 
 modificateurs temporaires:
 
-- meeting: 0 if t - last_meeting_start < SOME_THRESHOLD
 - disturbed: 0.8 with P_STAYS_DISTURBED
 - satisfied: 1.2 with P_STAYS_SATISFIED
 - angry: 0.5 with P_STAYS_ANGRY
@@ -49,27 +49,44 @@ modificateurs temporaires:
 
 shitty indicators:
 
-- number of lines of code: (production_tick / task_type) * rand(0.5, 1.5) * task_type
+- number of lines of code changed: (production_tick / task_type) * rand(0.5, 1.5) * task_type
   + documentation: 2
   + refactor: 1.2
   + new feature: 1
   + architecture: 0.25
+  + meeting: 0.01
 
 - number of commits: nbr_lines_of_code * rand(0.9, 1.1) * task_type
   + documentation: 0.4
   + refactor: 1.2
   + new_feature: 1
   + bug_fix: 2
+  + meeting: 0.01
+
+Better indicators:
 
 - task type
 
 - relationship * rand(0.7, 1.3) with random coworker
 
+- current task type preference
+
+---
+
+task change:
+
+raw weights: 0.5 new feature, 0.1 doc, 0.3 fix, 0.1 refactor
+real: double weight of current preference, triple weight of current task, and renormalize weights
+
+
+after X time ticks, reroll task
+
 ---
 
 actions:
 
-- 1:1 meeting (Get indicators)
+- override coworker task
+- 1:1 meeting (Get more indicators)
 - organize meeting: lasts MEETING_DURATION time, applies synergy
 - flame coworker:
   + P_LIKES_FLAME to apply satisfied to coworkers with relationship < REL_NEG_THRESHOLD with target
