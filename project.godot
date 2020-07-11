@@ -19,6 +19,10 @@ config/name="LC"
 run/main_scene="res://scenes/MainMenu.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+GameData="*res://scenes/GameData.gd"
+
 [rendering]
 
 quality/driver/driver_name="GLES2"

@@ -25,8 +25,8 @@ func draw_graph():
 	for i in range(pointsList.size()):
 		var value = pointsList[i]
 		var currentX = deltaX * float(i)
-		var currentY = maxY - float(value) / MAX_VALUE * maxY
-		# print(i, ":", currentX, ", ", currentY)
+		var currentY = maxY * (1 - float(value) / MAX_VALUE)
+		# print(i, ":", currentX, ", ", currentY, " value : ", value)
 		pv.append(Vector2(currentX, currentY))
 	$Line2D.points = pv
 
