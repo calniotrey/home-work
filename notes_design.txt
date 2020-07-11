@@ -30,6 +30,7 @@ task_types: documentation, refactor, new feature, architecture, bug fix
 - new_feature: 1
 - architecture: 0.1
 - meeting: 0.001
+- playing: 0.001
 
 ----
 
@@ -43,7 +44,7 @@ modificateurs temporaires:
 - (shared) past_documentation: 1 + 0.5 * exp(-1 * (t - t_past_documentation) / time_spent_documenting)
 - (shared) past_architecture: 1 + 0.5 * min(1, exp(- (threshold - time_spent_on_archi)))
 - (shared) bugs: exp(-1 * (t - t_past_bug_fix) / time_spent_on_bug_fix)
-- (shared) synergy: exp(- (t - t_last_meeting))
+- (shared) synergy: 0.5 + exp(- (t - t_last_meeting))
 
 ---
 
@@ -55,6 +56,7 @@ shitty indicators:
   + new feature: 1
   + architecture: 0.25
   + meeting: 0.01
+  + playing: 0.01
 
 - number of commits: nbr_lines_of_code * rand(0.9, 1.1) * task_type
   + documentation: 0.4
@@ -62,6 +64,7 @@ shitty indicators:
   + new_feature: 1
   + bug_fix: 2
   + meeting: 0.01
+  + playing: 0.01
 
 Better indicators:
 

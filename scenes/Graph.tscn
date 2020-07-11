@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/Graph.gd" type="Script" id=1]
+
+[node name="Graph" type="PanelContainer"]
+margin_right = 849.0
+margin_bottom = 525.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Line2D" type="Line2D" parent="."]
+width = 3.0
+[connection signal="resized" from="." to="." method="_on_graph_resized"]

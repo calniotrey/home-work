@@ -1,6 +1,6 @@
 extends PanelContainer
 
-signal selected_signal(value)
+signal selected(value)
 
 signal selected_task_signal(value)
 
@@ -26,9 +26,6 @@ var traits = []
 func _ready():
 	$SpeakTimer.wait_time = randf() * 400
 	$SpeakTimer.start()
-	set_random_traits()
-	set_random_task_preference()
-	set_random_task()
 
 func set_random_traits(): # TODO add difficulty impact
 	if randf() < 0.2:
@@ -99,8 +96,8 @@ func set_task(task):
 		current_task = "debug"
 	elif task == "refactoring":
 		current_task = "refactoring"
-	#print("New task : ", current_task)
 	time_until_task_change = randf()*3 + 2
+	# print("Changed task : ", current_task)
 	emit_signal("selected_task_signal", self)
 	
 func speak(text):
@@ -124,7 +121,7 @@ func _on_speaktimer_timeout():
 
 func _on_Coworker_gui_input(event):
 	if event is InputEventMouseButton and event.is_pressed():
-		emit_signal("selected_signal", self)
+		emit_signal("selected", self)
 
 func get_avatar():
 	return $Avatar
