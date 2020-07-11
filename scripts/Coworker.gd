@@ -2,7 +2,7 @@ extends PanelContainer
 
 
 func _ready():
-	$SpeakTimer.wait_time = randf() * 4
+	$SpeakTimer.wait_time = randf() * 400
 	$SpeakTimer.start()
 
 

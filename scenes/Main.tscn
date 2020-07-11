@@ -144,5 +144,5 @@ margin_bottom = 292.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
-[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/TotalGraph/Line2D" method="_on_Root_resized"]
 [connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/DiffGraph/Line2D" method="_on_Root_resized"]
+[connection signal="resized" from="." to="VBoxContainer/Top/TabContainer/TotalGraph/Line2D" method="_on_Root_resized"]

@@ -18,6 +18,8 @@ var productionSinceLastTimeUnit = 0.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize()
+
 	diffGraph = $VBoxContainer/Top/TabContainer/DiffGraph/Line2D
 	diffGraph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
 	diffGraph.MAX_VALUE = TARGET_PRODUCTION / MAX_TIME_UNIT / 2.0

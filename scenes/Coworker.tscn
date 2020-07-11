@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scripts/Coworker.gd" type="Script" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://scenes/Avatar.tscn" type="PackedScene" id=2]
 
 [node name="Coworker" type="PanelContainer"]
 margin_right = 250.0
@@ -43,14 +43,10 @@ __meta__ = {
 
 [node name="Timer" type="Timer" parent="BubbleCanvas/Bubble"]
 
-[node name="Avatar" type="TextureRect" parent="."]
+[node name="Avatar" parent="." instance=ExtResource( 2 )]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 243.0
 margin_bottom = 229.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-texture = ExtResource( 2 )
-stretch_mode = 6
 [connection signal="timeout" from="SpeakTimer" to="." method="_on_speaktimer_timeout"]
 [connection signal="timeout" from="BubbleCanvas/Bubble/Timer" to="." method="_on_bubble_timer_timeout"]
