@@ -26,15 +26,14 @@ func add_point(point):
 func draw_graph():
 	var pv = PoolVector2Array()
 	var maxX = rect_size.x
-	var maxY = rect_size.y
+	var maxY = rect_size.y - 5
 	var deltaX = maxX / (MAX_NUMBER_OF_POINTS - 1)
 
 	for i in range(pointsList.size()):
 		var value = pointsList[i]
 		var currentX = deltaX * float(i)
 		var currentY = maxY * (1 - float(value) / MAX_VALUE)
-		# print(i, ":", currentX, ", ", currentY, " value : ", value)
-		pv.append(Vector2(currentX, currentY))
+		pv.append(Vector2(currentX, max(0, currentY)))
 	$Line2D.points = pv
 
 	if average_required == 0:
