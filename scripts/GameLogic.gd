@@ -160,7 +160,7 @@ func get_global_production_factors():
 	factors['meeting'] = (0.5 + exp(-time_since_last_emergency_meeting / TIME_MEETING_CONSTANT))
 
 	factors['refacto'] = min(factors['refacto'], MAX_REFACTO_FACTOR)
-	factors['documentation'] = min(factors['refacto'], MAX_DOC_FACTOR)
+	factors['doc'] = min(factors['doc'], MAX_DOC_FACTOR)
 	factors['archi'] = min(factors['archi'], MAX_ARCHI_FACTOR)
 
 	return factors
