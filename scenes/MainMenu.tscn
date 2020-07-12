@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Fragmentcore.otf" type="DynamicFontData" id=1]
 [ext_resource path="res://game_theme.tres" type="Theme" id=2]
-[ext_resource path="res://scenes/MainMenu.gd" type="Script" id=3]
+[ext_resource path="res://scripts/MainMenu.gd" type="Script" id=3]
 
 [sub_resource type="DynamicFont" id=1]
 size = 50

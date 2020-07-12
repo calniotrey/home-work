@@ -21,7 +21,7 @@ config/icon="res://icon.png"
 
 [autoload]
 
-GameData="*res://scenes/GameData.gd"
+GameData="*res://scripts/GameData.gd"
 
 [rendering]
 
