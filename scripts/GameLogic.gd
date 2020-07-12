@@ -105,6 +105,7 @@ func _process(delta):
 	change_tasks_if_necessary()
 	coworkers_modifiers_check()
 	coworkers_traits_effects()
+	update_project_metrics()
 
 	if not stop and time_since_last_graph_append >= IRL_TIME_PER_UNIT:
 		debug_display()
@@ -128,6 +129,32 @@ func add_time(delta):
 		coworker.time_until_task_change -= delta
 		coworker.time_spent_on_current_task += delta
 		coworker.time_since_last_interaction +=  delta
+
+func get_tasks_ratios():
+	var factors = get_global_production_factors()
+	return {
+		"doc": (factors['doc'] - 1) / (MAX_DOC_FACTOR - 1),
+		"archi": (factors['archi'] - 1) / (MAX_ARCHI_FACTOR - 1),
+		"debug": factors['debug'] / 1.0,
+		"refacto": (factors['refacto'] - 1) / (MAX_REFACTO_FACTOR - 1),
+		"project": current_production / TARGET_PRODUCTION
+	}
+
+func update_project_metrics():
+	var tasks_ratios = get_tasks_ratios()
+	var doc_perc = round(100.0 * tasks_ratios['doc'])
+	var archi_perc = round(100 * tasks_ratios['archi'])
+	var debug_perc = round(100 * tasks_ratios['debug'])
+	var refacto_perc = round(100 * tasks_ratios['refacto'])
+	var project_perc = round(100 * tasks_ratios['project'])
+
+	var perc_string = ""
+	perc_string += "Documentation: " + str(doc_perc) + "%\n"
+	perc_string += "Architecture: " + str(archi_perc) + "%\n"
+	perc_string += "Debugging: " + str(debug_perc) + "%\n"
+	perc_string += "Refactorization: " + str(refacto_perc) + "%\n"
+	perc_string += "Project: " + str(project_perc) + "%"
+	$VBoxContainer/Bottom/GlobalPanel/VBoxContainer/ProjectInfo/Metrics.text = perc_string
 
 func get_global_production_factors():
 	var factors = {
