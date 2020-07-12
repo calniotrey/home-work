@@ -121,7 +121,7 @@ func set_random_task(): # TODO add difficulty impact
 func set_task(task):
 	current_task = task
 	time_until_task_change = randf() * (MAX_TIME_PER_TASK - MIN_TIME_PER_TASK) + MIN_TIME_PER_TASK
-	print("Coworker ", id, " changes task : ", current_task)
+	#print("Coworker ", id, " changes task : ", current_task)
 
 
 func speak(text):
