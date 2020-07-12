@@ -52,9 +52,55 @@ const TASK_TO_COMMITS_AMOUNT = {
 	"gaming": 0.01
 }
 
+
+const DIALOGS = {
+	"documentation": [
+		"Hmmm...",
+		"They'll figure",
+		"But this is obvious",
+		"Just read the code"
+	],
+	"refactoring": [
+		"Who wrote that?",
+		"Why!?",
+		"Interesting idea",
+		"Original"
+	],
+	"feature": [
+		"Improvisation is key",
+		"Things are moving",
+		"Quick and dirty",
+		"Don't look"
+	],
+	"architecture": [
+		"It will help",
+		"No one needs this",
+		"Maybe",
+		"We need a factory"
+	],
+	"debug": [
+		"Obviously",
+		"Please work",
+		"Ha ha!",
+		"Finally..."
+	],
+	"meeting": [
+		"Of course",
+		"Yes, manager",
+		"I respectfully disagree",
+		"Why not?"
+	],
+	"gaming": [
+		"I got you",
+		"Headshot",
+		"Bot is terrible",
+		"The boss is mean"
+	]
+}
+
+
 func _ready():
-	$SpeakTimer.wait_time = randf() * 20
-	$SpeakTimer.start()
+	plan_to_speak()
 
 
 func set_random_traits(): # TODO add difficulty impact
@@ -124,6 +170,11 @@ func set_task(task):
 	#print("Coworker ", id, " changes task : ", current_task)
 
 
+func plan_to_speak():
+	$SpeakTimer.wait_time = randf() * 40
+	$SpeakTimer.start()
+
+
 func speak(text):
 	$BubbleCanvas.offset = rect_global_position + rect_size/2
 	$BubbleCanvas/Bubble/Text.text = text
@@ -137,10 +188,14 @@ func stop_speaking():
 
 func _on_bubble_timer_timeout():
 	stop_speaking()
+	plan_to_speak()
 
 
 func _on_speaktimer_timeout():
-	speak("Please manage me " + self.name)
+	if current_task != null:
+		var texts = DIALOGS[current_task]
+		var k = randi() % len(texts)
+		speak(texts[k])
 
 
 func _on_Coworker_gui_input(event):
