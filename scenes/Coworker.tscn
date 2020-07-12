@@ -48,6 +48,7 @@ one_shot = true
 layer = 2
 
 [node name="Bubble" type="PanelContainer" parent="BubbleCanvas"]
+visible = false
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme = ExtResource( 3 )
