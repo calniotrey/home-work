@@ -24,6 +24,7 @@ var docs_list = []
 var time_spent_on_archi = 0
 var debugs_list = []
 var time_since_last_meeting = 0
+var total_time_elapsed = 0
 
 const ARCHI_THRESHOLD = 50
 const TIME_REFACTO_CONSTANT = 1
@@ -44,13 +45,12 @@ func _ready():
 	total_graph = $VBoxContainer/Top/MainDisplay/TabContainer/TotalGraph
 	total_graph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
 	total_graph.MAX_VALUE = TARGET_PRODUCTION
-	
+
 	# Init all the coworkers
 	var grids = [$VBoxContainer/Top/LeftCoworkerGrid, $VBoxContainer/Top/RightCoworkerGrid]
 	for grid in grids:
 		for coworker in grid.get_children():
 			coworker.connect("selected", self, "_coworker_selected")
-			coworker.connect("selected_task_signal", self, "coworker_selected_task")
 			coworker.get_avatar().generate_face()
 			coworkers_list.append(coworker)
 			coworker.set_random_traits()
@@ -59,10 +59,9 @@ func _ready():
 
 func _process(delta):
 	add_time(delta)
-	modify_time_from_current_tasks(delta)
-	
+
 	compute_production()
-	change_taks_if_necessary()
+	change_tasks_if_necessary()
 	if not stop and time_since_last_graph_append >= IRL_TIME_PER_UNIT:
 		# print("append : ", current_production)
 		current_time += 1
@@ -75,61 +74,30 @@ func _process(delta):
 		production_since_last_graph_append = 0
 
 func add_time(delta):
+	total_time_elapsed += delta
 	time_since_last_graph_append += delta
 	time_since_last_meeting += delta
-	for i in len(refactos_list):
-		refactos_list[i][0] = refactos_list[i][0] + delta
-	for doc in docs_list:
-		doc[0] += delta
-	for debug in debugs_list:
-		debug[0] += delta
 	for coworker in coworkers_list:
 		coworker.time_until_task_change -= delta
+		coworker.time_spent_on_current_task += delta
 
-func modify_time_from_current_tasks(delta):
-	for coworker in coworkers_list:
-		if coworker.current_task == "feature":
-			pass
-		elif coworker.current_task == "documentation":
-			docs_list[coworker.list_index][0] -= delta # because add_time added delta
-			docs_list[coworker.list_index][1] += delta
-		elif coworker.current_task == "debug":
-			debugs_list[coworker.list_index][0] -= delta # because add_time added delta
-			debugs_list[coworker.list_index][1] += delta
-		elif coworker.current_task == "refactoring":
-			refactos_list[coworker.list_index][0] -= delta # because add_time added delta
-			refactos_list[coworker.list_index][1] += delta
-		elif coworker.current_task == "architecture":
-			time_spent_on_archi += delta
-	
 func get_global_production_factor():
 	var factor = 1.0
 	for refacto in refactos_list:
-		var time_since = refacto[0]
+		var time_since = total_time_elapsed - refacto[0]
 		var time_spent = refacto[1]
 		factor *= 1.0 + exp(-1.0 * time_since / time_spent / TIME_REFACTO_CONSTANT)
 	for doc in docs_list:
-		var time_since = doc[0]
+		var time_since = total_time_elapsed - doc[0]
 		var time_spent = doc[1]
 		factor *= 1.0 + .5 * exp(-1.0 * time_since / time_spent / TIME_DOC_CONSTANT)
 	factor *= 1.0 + 0.5 * min(1.0, exp(- (ARCHI_THRESHOLD - time_spent_on_archi) / TIME_ARCHI_CONSTANT))
 	for debug in debugs_list:
-		var time_since = debug[0]
+		var time_since = total_time_elapsed - debug[0]
 		var time_spent = debug[1]
 		factor *= 1.0 + 0.2 * exp(-1.0 * time_since / time_spent / TIME_DEBUG_CONSTANT)
 	factor *= (0.5 + exp(-time_since_last_meeting / TIME_MEETING_CONSTANT))
 	return factor
-
-func coworker_selected_task(coworker):
-	if coworker.current_task == "documentation":
-		coworker.list_index = len(docs_list)
-		docs_list.append([0.0, 0.0])
-	elif coworker.current_task == "debug":
-		coworker.list_index = len(debugs_list)
-		debugs_list.append([0.0, 0.0])
-	elif coworker.current_task == "refactoring":
-		coworker.list_index = len(refactos_list)
-		refactos_list.append([0.0, 0.0])
 
 func _coworker_selected(coworker):
 	var cwk = $VBoxContainer/Top/MainDisplay/CurrentWorker
@@ -151,16 +119,28 @@ func compute_production():
 	current_production += prod
 	current_production = min(total_graph.MAX_VALUE, max(0, current_production))
 
-func change_taks_if_necessary():
+func change_tasks_if_necessary():
 	for coworker in coworkers_list:
 		if coworker.time_until_task_change <= 0:
+			var new_elem = [total_time_elapsed, coworker.time_spent_on_current_task]
+			if coworker.current_task == "feature":
+				pass
+			elif coworker.current_task == "documentation":
+				docs_list.append(new_elem)
+			elif coworker.current_task == "debug":
+				debugs_list.append(new_elem)
+			elif coworker.current_task == "refactoring":
+				refactos_list.append(new_elem)
+			elif coworker.current_task == "architecture":
+				time_spent_on_archi += coworker.time_spent_on_current_task
+
 			coworker.set_random_task()
 
 func check_end_game():
-	if false:
+	if current_production >= TARGET_PRODUCTION:
 		stop = true
 		get_tree().change_scene("res://scenes/Victory.tscn")
-	elif false:
+	elif total_time_elapsed >= MAX_TIME_UNIT * IRL_TIME_PER_UNIT:
 		stop = true
 		get_tree().change_scene("res://scenes/Defeat.tscn")
 

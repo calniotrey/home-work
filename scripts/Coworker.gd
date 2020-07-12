@@ -14,6 +14,7 @@ var current_task = null
 var current_prefered_task = null
 var list_index = 0 # the index of the refacto/debug/doc he's currently working on
 var time_until_task_change = 0
+var time_spent_on_current_task = 0
 
 # Modifiers
 var isDisturbed = false
@@ -56,50 +57,39 @@ func set_random_task_preference(): # TODO add difficulty impact
 
 func set_random_task(): # TODO add difficulty impact
 	var r = randf()
-	var feature_weight = 0.5
-	var documentation_weight = 0.1
-	var debug_weight = 0.3
-	var refactoring_weight = 0.1
-	if current_task == "feature":
-		feature_weight *= 3.0
-	elif current_task == "documentation":
-		documentation_weight *= 3.0
-	elif current_task == "debug":
-		debug_weight *= 3.0
-	elif current_task == "refactoring":
-		refactoring_weight *= 3.0
-	if current_prefered_task == "feature":
-		feature_weight *= 2.0
-	elif current_prefered_task == "documentation":
-		documentation_weight *= 2.0
-	elif current_prefered_task == "debug":
-		debug_weight *= 2.0
-	elif current_prefered_task == "refactoring":
-		refactoring_weight *= 2.0
-	var total_weight = feature_weight + documentation_weight + debug_weight + refactoring_weight
-	r *= total_weight
-	if r < feature_weight:
-		set_task("feature")
-	elif r < feature_weight + documentation_weight:
-		set_task("documentation")
-	elif r < feature_weight + documentation_weight + debug_weight:
-		set_task("debug")
-	elif r < feature_weight + documentation_weight + debug_weight + refactoring_weight:
-		set_task("refactoring")
+
+	#    v---- for ordering purposes
+	var keys = ["feature", "documentation", "debug", "refactoring"]
+	var weights = {
+		"feature": 0.5,
+		"documentation": 0.1,
+		"debug": 0.3,
+		"refactoring": 0.1
+	}
+	if current_task:
+		weights[current_task] *= 3
+	if current_prefered_task:
+		weights[current_prefered_task] *= 2
+	var total_weight = 0
+	for w in weights.values():
+		total_weight += w
+	for w in weights.keys():
+		weights[w] /= total_weight
+
+	for key in keys:
+		if r < weights[key]:
+			set_task(key)
+		else:
+			r -= weights[key]
+
+	time_spent_on_current_task = 0
 
 func set_task(task):
-	if task == "feature":
-		current_task = "feature"
-	elif task == "documentation":
-		current_task = "documentation"
-	elif task == "debug":
-		current_task = "debug"
-	elif task == "refactoring":
-		current_task = "refactoring"
+	current_task = task
 	time_until_task_change = randf()*3 + 2
 	# print("Changed task : ", current_task)
 	emit_signal("selected_task_signal", self)
-	
+
 func speak(text):
 	$BubbleCanvas.offset = rect_global_position + rect_size/2
 	$BubbleCanvas/Bubble/Text.text = text
@@ -127,21 +117,16 @@ func get_avatar():
 	return $Avatar
 
 func get_task_factor():
-	if current_task == "refactoring":
-		return 0.1
-	elif current_task == "documentation":
-		return 0.01
-	elif current_task == "debug":
-		return 0.8
-	elif current_task == "feature":
-		return 1.0
-	elif current_task == "architecture":
-		return 0.1
-	elif current_task == "meeting":
-		return 0.0001
-	elif current_task == "gaming":
-		return 0.0001
-	return 1.0
+	var task_to_production_value = {
+		"refactoring": 0.1,
+		"documentation": 0.01,
+		"debug": 0.8,
+		"feature": 1.0,
+		"architecture": 0.1,
+		"meeting": 0.0001,
+		"gaming": 0.0001
+	}
+	return task_to_production_value.get(current_task, 1)
 
 func get_managed_factor():
 	var factor = 1.0
@@ -152,6 +137,6 @@ func get_managed_factor():
 	if traits.has("managophobe"):
 		factor *= .5 * (2.0 - exp(-time_since_last_interaction/TIME_MANAGEMENT))
 	return factor
-	
+
 func get_raw_production():
 	return (randf() * 0.2 + 0.8) * skill * get_managed_factor() * get_task_factor()
