@@ -53,7 +53,7 @@ const TASK_TO_COMMITS_AMOUNT = {
 }
 
 func _ready():
-	$SpeakTimer.wait_time = randf() * 400
+	$SpeakTimer.wait_time = randf() * 20
 	$SpeakTimer.start()
 
 
