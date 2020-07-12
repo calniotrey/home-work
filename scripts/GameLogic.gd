@@ -215,18 +215,15 @@ func get_global_production_factor():
 
 func _coworker_selected(coworker):
 	var cwk = $VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker
-	var task_name = $VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/CurrentTask/TaskName
+	var task_name = $VBoxContainer/Bottom/IndicatorPanel/CurrentTask/TaskName
 	cwk.visible = true
 	cwk.modulate.a = 1
 	cwk.get_node("Avatar").copy(coworker.get_avatar())
 	cwk.get_node("FadeTimer").start()
 
 	var basic = $VBoxContainer/Bottom/IndicatorPanel/Basic
-
-	if coworker.is_current_task_known:
-		task_name.text = TASK_TO_STRING.get(coworker.current_task, "Unknown")
-	else:
-		task_name.text = "Unknown"
+	
+	task_name.text = "unknown"
 
 	if selected_coworker != null:
 		basic.get_node("Lines/Graph").stop_copy_display_of(selected_coworker.lines_graph)
@@ -272,7 +269,7 @@ func change_tasks_if_necessary():
 
 			coworker.set_random_task()
 	if selected_coworker != null:
-		var task_name = $VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/CurrentTask/TaskName
+		var task_name = $VBoxContainer/Bottom/IndicatorPanel/CurrentTask/TaskName
 		if selected_coworker.is_current_task_known:
 			task_name.text = TASK_TO_STRING.get(selected_coworker.current_task, "Unknown")
 		else:
@@ -346,7 +343,7 @@ func _on_manage_coworker():
 	if selected_coworker != null:
 		selected_coworker.time_since_last_interaction = 0
 		selected_coworker.set_task("meeting")
-		var task_name = $VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/CurrentTask/TaskName
+		var task_name = $VBoxContainer/Bottom/IndicatorPanel/CurrentTask/TaskName
 		task_name.text = TASK_TO_STRING.get(selected_coworker.current_task, "Unknown")
 		selected_coworker.is_current_task_known = true
 		coworker_managed = selected_coworker
