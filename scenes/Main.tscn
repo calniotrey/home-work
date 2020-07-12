@@ -1,18 +1,19 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/GameLogic.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Graph.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/Coworker.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/StressClock.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/Avatar.tscn" type="PackedScene" id=5]
 [ext_resource path="res://game_theme.tres" type="Theme" id=6]
 [ext_resource path="res://panel_style.tres" type="StyleBox" id=7]
 [ext_resource path="res://scripts/MainDisplay.gd" type="Script" id=8]
 
-[sub_resource type="StyleBoxEmpty" id=4]
+[sub_resource type="StyleBoxEmpty" id=1]
 
 [sub_resource type="Theme" id=2]
 
-[sub_resource type="StyleBoxEmpty" id=5]
+[sub_resource type="StyleBoxEmpty" id=3]
 
 [node name="Root" type="Control"]
 anchor_right = 1.0
@@ -135,7 +136,7 @@ margin_bottom = 305.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_styles/panel = SubResource( 4 )
+custom_styles/panel = SubResource( 1 )
 
 [node name="FadeTimer" type="Timer" parent="VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker"]
 wait_time = 3.0
@@ -147,7 +148,7 @@ one_shot = true
 margin_right = 483.0
 margin_bottom = 298.0
 theme = SubResource( 2 )
-custom_styles/panel = SubResource( 5 )
+custom_styles/panel = SubResource( 3 )
 
 [node name="RightCoworkerGrid" type="GridContainer" parent="VBoxContainer/Top"]
 margin_left = 753.0
@@ -268,6 +269,18 @@ margin_right = 271.0
 margin_bottom = 203.0
 size_flags_vertical = 6
 text = "Flame coworker"
+
+[node name="ClockContainer" type="PanelContainer" parent="VBoxContainer/Bottom/OptionPanel"]
+visible = false
+margin_right = 271.0
+margin_bottom = 236.0
+
+[node name="Timer" type="Timer" parent="VBoxContainer/Bottom/OptionPanel/ClockContainer"]
+one_shot = true
+
+[node name="StressClock" parent="VBoxContainer/Bottom/OptionPanel/ClockContainer" instance=ExtResource( 4 )]
+position = Vector2( 135, 118 )
+scale = Vector2( 0.25, 0.25 )
 
 [node name="IndicatorPanel" type="TabContainer" parent="VBoxContainer/Bottom"]
 margin_left = 275.0
@@ -401,6 +414,23 @@ margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "EMERGENCY MEETING"
+
+[node name="ClockContainer" type="PanelContainer" parent="VBoxContainer/Bottom/GlobalPanel"]
+visible = false
+margin_right = 273.0
+margin_bottom = 236.0
+
+[node name="Timer" type="Timer" parent="VBoxContainer/Bottom/GlobalPanel/ClockContainer"]
+
+[node name="StressClock" parent="VBoxContainer/Bottom/GlobalPanel/ClockContainer" instance=ExtResource( 4 )]
+position = Vector2( 135, 118 )
+scale = Vector2( 0.25, 0.25 )
 [connection signal="pressed" from="VBoxContainer/Top/MainDisplay/TabButtons/Total" to="VBoxContainer/Top/MainDisplay" method="_on_total_selected"]
 [connection signal="pressed" from="VBoxContainer/Top/MainDisplay/TabButtons/Diff" to="VBoxContainer/Top/MainDisplay" method="_on_diff_selected"]
 [connection signal="timeout" from="VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker/FadeTimer" to="." method="_on_start_fading"]
+[connection signal="tween_all_completed" from="VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker/FadeTween" to="." method="_on_current_coworker_finished_fading"]
+[connection signal="button_down" from="VBoxContainer/Bottom/OptionPanel/OptionContainer/Meeting" to="." method="_on_manage_coworker"]
+[connection signal="item_selected" from="VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/ChangeTask/Switch" to="." method="_on_assign_task_to_coworker"]
+[connection signal="button_down" from="VBoxContainer/Bottom/OptionPanel/OptionContainer/Flame" to="." method="_on_flaming_coworker"]
+[connection signal="timeout" from="VBoxContainer/Bottom/OptionPanel/ClockContainer/Timer" to="." method="_on_stop_stress_clock"]
+[connection signal="button_down" from="VBoxContainer/Bottom/GlobalPanel/VBoxContainer/Button" to="." method="_on_start_emergency_meeting"]

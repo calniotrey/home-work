@@ -288,15 +288,15 @@ func _on_start_fading():
 							   Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween.start()
 
-func _on_Meeting_button_down():
+func _on_manage_coworker():
 	if selected_coworker != null:
 		selected_coworker.time_since_last_interaction = 0
 		selected_coworker.set_task("meeting")
 		coworker_managed = selected_coworker
 		open_stress_clock(MEETING_DURATION)
 
-func _on_Switch_item_selected(index):
-	var switch = $VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/ChangeTask/Switch
+func _on_assign_task_to_coworker(index):
+	var switch = $VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/ChangeTask/Switch
 	if selected_coworker != null and index > 0 and index < 4:
 		if index == 1:
 			selected_coworker.set_task("debug")
@@ -309,7 +309,7 @@ func _on_Switch_item_selected(index):
 		open_stress_clock(ASSIGN_TASK_DURATION)
 	switch.select(0)
 
-func _on_Flame_button_down():
+func _on_flaming_coworker():
 	if selected_coworker != null:
 		selected_coworker.time_since_last_interaction = 0
 		for coworker in coworkers_list:
@@ -324,32 +324,35 @@ func _on_Flame_button_down():
 		coworker_managed = selected_coworker
 		open_stress_clock(FLAME_DURATION)
 
-func _on_RedButton_gui_input(event):
-	if event is InputEventMouseButton and event.is_pressed():
-		for coworker in coworkers_list:
-			coworker.time_since_last_interaction = 0
-			coworker.set_task("meeting")
-		time_since_last_emergency_meeting = 0
-		open_stress_clock(EMERGENCY_MEETING_DURATION)
+func _on_start_emergency_meeting():
+	for coworker in coworkers_list:
+		coworker.time_since_last_interaction = 0
+		coworker.set_task("meeting")
+	time_since_last_emergency_meeting = 0
+	open_stress_clock(EMERGENCY_MEETING_DURATION)
 	
 func open_stress_clock(duration):
-	var clock = $VBoxContainer/Bottom/PanelContainer/Clock
-	var options = $VBoxContainer/Bottom/PanelContainer/Options
-	var timer = $VBoxContainer/Bottom/PanelContainer/Clock/Timer
+	var clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer
+	var clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer
+	var options = $VBoxContainer/Bottom/OptionPanel/OptionContainer
+	var timer = $VBoxContainer/Bottom/OptionPanel/ClockContainer/Timer
 	options.visible = false
-	clock.visible = true
+	clock1.visible = true
+	clock2.visible = true
 	timer.wait_time = duration
 	timer.start()
 
-func _on_Timer_timeout():
-	var clock = $VBoxContainer/Bottom/PanelContainer/Clock
-	var options = $VBoxContainer/Bottom/PanelContainer/Options
+func _on_stop_stress_clock():
+	var clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer
+	var clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer
+	var options = $VBoxContainer/Bottom/OptionPanel/OptionContainer
 	options.visible = true
-	clock.visible = false
+	clock1.visible = false
+	clock2.visible = false
 	if coworker_managed != null:
 		coworker_managed.set_random_task()
 
-func _on_FadeTween_tween_all_completed():
+func _on_current_coworker_finished_fading():
 	selected_coworker = null
 	
 func debug_display():
