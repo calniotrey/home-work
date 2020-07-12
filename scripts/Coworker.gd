@@ -15,6 +15,8 @@ var indicators = {
 	"commits": 0.0
 }
 
+var game_data = null
+
 var time_since_last_interaction = 0.0
 var current_task = null
 var current_prefered_task = null
@@ -100,6 +102,7 @@ const DIALOGS = {
 
 
 func _ready():
+	game_data = get_node("/root/GameData")
 	plan_to_speak()
 
 
@@ -108,13 +111,13 @@ func set_random_traits(): # TODO add difficulty impact
 		traits.append("autonomous")
 	elif randf() < 0.2 / 0.8: # 20% chance
 		traits.append("slacker")
-	if randf() < 0.1:
+	if randf() < 0.1 * game_data.difficulty:
 		traits.append("annoying")
-	if randf() < 0.1:
+	if randf() < 0.1 * game_data.difficulty:
 		traits.append("ambitious")
 	if randf() < 0.1:
 		traits.append("managophobe")
-	if randf() < 0.1:
+	if randf() < 0.1 * game_data.difficulty:
 		traits.append("gamer")
 
 

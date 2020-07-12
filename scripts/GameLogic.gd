@@ -10,7 +10,7 @@ var total_graph
 var stop = false
 
 var MAX_TIME_UNIT = 600.0
-var TARGET_PRODUCTION = 1000.0
+var TARGET_PRODUCTION = 300
 var IRL_TIME_PER_UNIT = 0.5 # TODO restore to 1 before getting good constants
 
 var current_production = 0.0
@@ -35,7 +35,7 @@ const TIME_ARCHI_CONSTANT   = 10
 const TIME_DEBUG_CONSTANT   = 10
 const TIME_MEETING_CONSTANT = 10
 
-const PRODUCTION_CONSTANT = 0.5
+const PRODUCTION_CONSTANT = 1
 const RATIO_PRODUCTION_TO_DEBUG = 0.5
 
 const P_DISTURBED_REMOVED   = 0.01
@@ -71,6 +71,9 @@ const MAX_ARCHI_FACTOR = 2
 func _ready():
 	randomize()
 
+	var game_data = get_node("/root/GameData")
+	TARGET_PRODUCTION += 100 * game_data.difficulty
+
 	diff_graph = $VBoxContainer/Top/MainDisplay/Graphs/Diff
 	diff_graph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
 	diff_graph.MAX_VALUE = TARGET_PRODUCTION / (MAX_TIME_UNIT / 3)
@@ -105,6 +108,7 @@ func _process(delta):
 	change_tasks_if_necessary()
 	coworkers_modifiers_check()
 	coworkers_traits_effects()
+	update_project_metrics()
 
 	if not stop and time_since_last_graph_append >= IRL_TIME_PER_UNIT:
 		debug_display()
@@ -128,6 +132,32 @@ func add_time(delta):
 		coworker.time_until_task_change -= delta
 		coworker.time_spent_on_current_task += delta
 		coworker.time_since_last_interaction +=  delta
+
+func get_tasks_ratios():
+	var factors = get_global_production_factors()
+	return {
+		"doc": (factors['doc'] - 1) / (MAX_DOC_FACTOR - 1),
+		"archi": (factors['archi'] - 1) / (MAX_ARCHI_FACTOR - 1),
+		"debug": factors['debug'] / 1.0,
+		"refacto": (factors['refacto'] - 1) / (MAX_REFACTO_FACTOR - 1),
+		"project": current_production / TARGET_PRODUCTION
+	}
+
+func update_project_metrics():
+	var tasks_ratios = get_tasks_ratios()
+	var doc_perc = round(100.0 * tasks_ratios['doc'])
+	var archi_perc = round(100 * tasks_ratios['archi'])
+	var debug_perc = round(100 * tasks_ratios['debug'])
+	var refacto_perc = round(100 * tasks_ratios['refacto'])
+	var project_perc = round(100 * tasks_ratios['project'])
+
+	var perc_string = ""
+	perc_string += "Documentation: " + str(doc_perc) + "%\n"
+	perc_string += "Architecture: " + str(archi_perc) + "%\n"
+	perc_string += "Debugging: " + str(debug_perc) + "%\n"
+	perc_string += "Refactorization: " + str(refacto_perc) + "%\n"
+	perc_string += "Project: " + str(project_perc) + "%"
+	$VBoxContainer/Bottom/GlobalPanel/VBoxContainer/ProjectInfo/Metrics.text = perc_string
 
 func get_global_production_factors():
 	var factors = {
@@ -155,7 +185,7 @@ func get_global_production_factors():
 		exp(- (ARCHI_THRESHOLD - time_spent_on_archi) / TIME_ARCHI_CONSTANT)
 	)
 
-	factors['debug'] = min(1, exp(-1 * (to_debug - debugging_done)))
+	factors['debug'] = min(1, exp(-1 * (to_debug - debugging_done) / TIME_DEBUG_CONSTANT))
 
 
 	factors['meeting'] = (0.5 + exp(-time_since_last_emergency_meeting / TIME_MEETING_CONSTANT))
@@ -181,14 +211,14 @@ func _coworker_selected(coworker):
 	cwk.get_node("FadeTimer").start()
 
 	var basic = $VBoxContainer/Bottom/IndicatorPanel/Basic
-	
+
 	if selected_coworker != null:
 		basic.get_node("Lines/Graph").stop_copy_display_of(selected_coworker.lines_graph)
 		basic.get_node("Commits/Graph").stop_copy_display_of(selected_coworker.commits_graph)
-		
+
 	basic.get_node("Lines/Graph").copy_display_of(coworker.lines_graph)
 	basic.get_node("Commits/Graph").copy_display_of(coworker.commits_graph)
-	
+
 	selected_coworker = coworker
 
 
@@ -196,7 +226,7 @@ func compute_production(delta):
 	var prod = 0.0
 	for coworker in coworkers_list:
 		if coworker.current_task == 'debug':
-			debugging_done += coworker.time_spent_on_current_task * coworker.skill
+			debugging_done += delta * coworker.skill
 			debugging_done = min(debugging_done, to_debug)
 
 		var rp = coworker.get_raw_production()
@@ -331,7 +361,7 @@ func _on_start_emergency_meeting():
 		coworker.set_task("meeting")
 	is_in_emergency_meeting = true
 	open_stress_clock(EMERGENCY_MEETING_DURATION)
-	
+
 func open_stress_clock(duration):
 	var clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer
 	var clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer
@@ -362,7 +392,7 @@ func _on_stop_stress_clock():
 
 func _on_current_coworker_finished_fading():
 	selected_coworker = null
-	
+
 func debug_display():
 	var factors = get_global_production_factors()
 	var current_tasks = {}
@@ -388,4 +418,4 @@ func _on_root_resized():
 	var max_diameter2 = 0.9 * min(stress_clock2.position.x, stress_clock2.position.y)
 	stress_clock1.scale = Vector2( max_diameter1 / 400, max_diameter1 / 400 )
 	stress_clock2.scale = Vector2( max_diameter2 / 400, max_diameter2 / 400 )
-	
+
