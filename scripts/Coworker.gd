@@ -9,7 +9,6 @@ var TIME_MANAGEMENT = 1.0
 var skill = 0.5
 var relationships = []
 var time_since_last_interaction = 0.0
-var modifiers = []
 var current_task = null
 var current_prefered_task = null
 var list_index = 0 # the index of the refacto/debug/doc he's currently working on
@@ -17,9 +16,9 @@ var time_until_task_change = 0
 var time_spent_on_current_task = 0
 
 # Modifiers
-var isDisturbed = false
-var isSatisfied = false
-var isAngry = false
+var is_disturbed = false
+var is_satisfied = false
+var is_angry = false
 
 # Traits
 var traits = []
@@ -59,12 +58,14 @@ func set_random_task(): # TODO add difficulty impact
 	var r = randf()
 
 	#    v---- for ordering purposes
-	var keys = ["feature", "documentation", "debug", "refactoring"]
+	var keys = ["feature", "documentation", "debug", "refactoring", "meeting", "gaming"]
 	var weights = {
 		"feature": 0.5,
 		"documentation": 0.1,
 		"debug": 0.3,
-		"refactoring": 0.1
+		"refactoring": 0.1,
+		"meeting": 0.0,
+		"gaming": 0.0
 	}
 	if current_task:
 		weights[current_task] *= 3
@@ -132,11 +133,23 @@ func get_managed_factor():
 	var factor = 1.0
 	if traits.has("autonomous"):
 		factor *= .5 * (2.0 - exp(-time_since_last_interaction/TIME_MANAGEMENT))
-	if traits.has("slacker"):
+	elif traits.has("slacker"):
 		factor *= exp(-3.0 * time_since_last_interaction/TIME_MANAGEMENT)
+	else:
+		factor *= .5 * (1.0 + exp(-time_since_last_interaction/TIME_MANAGEMENT))
 	if traits.has("managophobe"):
 		factor *= .5 * (2.0 - exp(-time_since_last_interaction/TIME_MANAGEMENT))
 	return factor
 
+func get_modifiers_factor():
+	var factor = 1.0
+	if is_disturbed:
+		factor *= .8
+	if is_satisfied:
+		factor *= 1.2
+	elif is_angry:
+		factor *= 0.5
+	return factor
+
 func get_raw_production():
-	return (randf() * 0.2 + 0.8) * skill * get_managed_factor() * get_task_factor()
+	return (randf() * 0.2 + 0.8) * skill * get_managed_factor() * get_task_factor() * get_modifiers_factor()

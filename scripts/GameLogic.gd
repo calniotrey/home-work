@@ -12,7 +12,7 @@ var stop = false
 
 var MAX_TIME_UNIT = 300.0
 var TARGET_PRODUCTION = 10.0
-var IRL_TIME_PER_UNIT = 0.05
+var IRL_TIME_PER_UNIT = 0.05 # TODO restore to 1 before getting good constants
 
 var current_production = 0.0
 var current_time = 0.0
@@ -34,6 +34,14 @@ const TIME_DEBUG_CONSTANT 	= 1
 const TIME_MEETING_CONSTANT = 1
 
 const PRODUCTION_CONSTANT = 0.001
+
+const P_DISTURBED_REMOVED   = 0.01
+const P_SATISFIED_REMOVED   = 0.01
+const P_ANGRY_REMOVED       = 0.01
+
+const P_ANNOYING_EFFECT     = 0.001
+const P_AMBITIOUS_EFFECT    = 0.001
+const GAMING_CONSTANT       = 10000.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -62,6 +70,8 @@ func _process(delta):
 
 	compute_production()
 	change_tasks_if_necessary()
+	coworkers_modifiers_check()
+	coworkers_traits_effects()
 	if not stop and time_since_last_graph_append >= IRL_TIME_PER_UNIT:
 		# print("append : ", current_production)
 		current_time += 1
@@ -80,6 +90,7 @@ func add_time(delta):
 	for coworker in coworkers_list:
 		coworker.time_until_task_change -= delta
 		coworker.time_spent_on_current_task += delta
+		coworker.time_since_last_interaction +=  delta
 
 func get_global_production_factor():
 	var factor = 1.0
@@ -135,6 +146,38 @@ func change_tasks_if_necessary():
 				time_spent_on_archi += coworker.time_spent_on_current_task
 
 			coworker.set_random_task()
+
+func coworkers_modifiers_check():
+	for index in len(coworkers_list):
+		var coworker = coworkers_list[index]
+		if coworker.is_disturbed and randf() < P_DISTURBED_REMOVED:
+			print("Coworker ", index, " stops being disturbed")
+			coworker.is_disturbed = false
+		if coworker.is_satisfied and randf() < P_SATISFIED_REMOVED:
+			print("Coworker ", index, " stops being satisfied")
+			coworker.is_satisfied = false
+		if coworker.is_angry and randf() < P_ANGRY_REMOVED:
+			print("Coworker ", index, " stops being angry")
+			coworker.is_angry = false
+
+func coworkers_traits_effects():
+	for index in len(coworkers_list):
+		var coworker = coworkers_list[index]
+		if coworker.traits.has("annoying") and randf() < P_ANNOYING_EFFECT:
+			var random_index = randi() % (len(coworkers_list) - 1)
+			if random_index >= index: # remove possibility to get same coworker
+				random_index += 1
+			coworkers_list[random_index].is_disturbed = true
+			print("Coworker ", index, " disturbs coworker ", random_index)
+		if coworker.traits.has("ambitious") and randf() < P_AMBITIOUS_EFFECT:
+			var random_index = randi() % (len(coworkers_list) - 1)
+			if random_index >= index: # remove possibility to get same coworker
+				random_index += 1
+			coworkers_list[random_index].time_since_last_interaction = 0
+			print("Coworker ", index, " 'manages' coworker ", random_index)
+		if coworker.traits.has("gamer") and randf() > exp(-coworker.time_since_last_interaction / GAMING_CONSTANT ):
+			coworker.set_task("gaming") # TODO add proba to trigger gaming on others
+			print("Coworker ", index, " starts playing")
 
 func check_end_game():
 	if current_production >= TARGET_PRODUCTION:

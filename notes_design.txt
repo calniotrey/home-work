@@ -39,7 +39,7 @@ modificateurs temporaires:
 - disturbed: 0.8 with P_STAYS_DISTURBED
 - satisfied: 1.2 with P_STAYS_SATISFIED
 - angry: 0.5 with P_STAYS_ANGRY
-- playing: 0 with P_KEEPS_PLAYING
+- playing: it's a task => stops normally and doesn't have malus effects
 - (shared) past_refactor: 1 + exp(-1 * (t - t_past_refactor) / time_spent_refactoring)
 - (shared) past_documentation: 1 + 0.5 * exp(-1 * (t - t_past_documentation) / time_spent_documenting)
 - (shared) past_architecture: 1 + 0.5 * min(1, exp(- (threshold - time_spent_on_archi)))
