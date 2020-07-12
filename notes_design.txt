@@ -55,11 +55,12 @@ shitty indicators:
   + refactor: 1.2
   + new feature: 1
   + architecture: 0.25
-  + bug_fix: 0
+  + bug_fix: 0.7
   + meeting: 0.01
   + playing: 0.01
 
 - number of commits: nbr_lines_of_code * rand(0.9, 1.1) * task_type
+  + architecture: 0.1
   + documentation: 0.4
   + refactor: 1.2
   + new_feature: 1
