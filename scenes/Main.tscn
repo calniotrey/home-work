@@ -426,6 +426,7 @@ margin_bottom = 236.0
 [node name="StressClock" parent="VBoxContainer/Bottom/GlobalPanel/ClockContainer" instance=ExtResource( 4 )]
 position = Vector2( 135, 118 )
 scale = Vector2( 0.25, 0.25 )
+[connection signal="resized" from="." to="." method="_on_root_resized"]
 [connection signal="pressed" from="VBoxContainer/Top/MainDisplay/TabButtons/Total" to="VBoxContainer/Top/MainDisplay" method="_on_total_selected"]
 [connection signal="pressed" from="VBoxContainer/Top/MainDisplay/TabButtons/Diff" to="VBoxContainer/Top/MainDisplay" method="_on_diff_selected"]
 [connection signal="timeout" from="VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker/FadeTimer" to="." method="_on_start_fading"]

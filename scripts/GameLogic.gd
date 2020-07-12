@@ -373,3 +373,19 @@ func debug_display():
 		current_tasks[task] += 1
 	print("Global production factors ", factors)
 	print("Current tasks: ", current_tasks)
+
+
+func _on_root_resized():
+	var clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer
+	var clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer
+	var stress_clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer/StressClock
+	var stress_clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer/StressClock
+	# set to center
+	stress_clock1.position = clock1.rect_size / 2
+	stress_clock2.position = clock2.rect_size / 2
+	# set clock size to not overflow
+	var max_diameter1 = 0.9 * min(stress_clock1.position.x, stress_clock1.position.y)
+	var max_diameter2 = 0.9 * min(stress_clock2.position.x, stress_clock2.position.y)
+	stress_clock1.scale = Vector2( max_diameter1 / 400, max_diameter1 / 400 )
+	stress_clock2.scale = Vector2( max_diameter2 / 400, max_diameter2 / 400 )
+	
