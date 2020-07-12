@@ -26,6 +26,7 @@ var total_time_elapsed = 0
 var to_debug = 0
 var debugging_done = 0
 
+var is_in_emergency_meeting = false
 
 const ARCHI_THRESHOLD = 50
 const TIME_REFACTO_CONSTANT = 10
@@ -328,7 +329,7 @@ func _on_start_emergency_meeting():
 	for coworker in coworkers_list:
 		coworker.time_since_last_interaction = 0
 		coworker.set_task("meeting")
-	time_since_last_emergency_meeting = 0
+	is_in_emergency_meeting = true
 	open_stress_clock(EMERGENCY_MEETING_DURATION)
 	
 func open_stress_clock(duration):
@@ -351,6 +352,13 @@ func _on_stop_stress_clock():
 	clock2.visible = false
 	if coworker_managed != null:
 		coworker_managed.set_random_task()
+	if is_in_emergency_meeting:
+		is_in_emergency_meeting = false
+		for coworker in coworkers_list:
+			coworker.time_since_last_interaction = 0
+			coworker.set_random_task()
+		time_since_last_emergency_meeting = 0
+
 
 func _on_current_coworker_finished_fading():
 	selected_coworker = null

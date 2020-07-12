@@ -129,6 +129,7 @@ custom_styles/panel = ExtResource( 7 )
 line_color = Color( 0.976471, 0.698039, 0.509804, 1 )
 
 [node name="CurrentWorker" type="PanelContainer" parent="VBoxContainer/Top/MainDisplay/Graphs"]
+visible = false
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 490.0
