@@ -8,6 +8,10 @@ var TIME_MANAGEMENT = 1.0
 
 var skill = 0.5
 var relationships = []
+var indicators = {
+	"lines": 0.0,
+	"commits": 0.0
+}
 var time_since_last_interaction = 0.0
 var current_task = null
 var current_prefered_task = null
@@ -22,6 +26,25 @@ var is_angry = false
 
 # Traits
 var traits = []
+
+const TASK_TO_LINES_AMOUNT = {
+	"documentation": 2.0,
+	"refactoring": 1.2,
+	"feature": 1.0,
+	"architecture": 0.25,
+	"debug": 0.0,
+	"meeting": 0.01,
+	"gaming": 0.01
+}
+const TASK_TO_COMMITS_AMOUNT = {
+	"documentation": 0.4,
+	"refactoring": 1.2,
+	"feature": 1.0,
+	"architecture": 0.0,
+	"debug": 2.0,
+	"meeting": 0.01,
+	"gaming": 0.01
+}
 
 func _ready():
 	$SpeakTimer.wait_time = randf() * 400
@@ -153,3 +176,7 @@ func get_modifiers_factor():
 
 func get_raw_production():
 	return (randf() * 0.2 + 0.8) * skill * get_managed_factor() * get_task_factor() * get_modifiers_factor()
+
+func update_indicators(delta):
+	indicators["lines"] += TASK_TO_LINES_AMOUNT.get(current_task, 1) * (0.5 + 0.5 * randf()) * delta
+	indicators["commits"] += TASK_TO_COMMITS_AMOUNT.get(current_task, 1) * (0.5 + 0.5 * randf()) * delta

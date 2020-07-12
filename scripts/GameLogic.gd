@@ -33,7 +33,7 @@ const TIME_ARCHI_CONSTANT 	= 1
 const TIME_DEBUG_CONSTANT 	= 1
 const TIME_MEETING_CONSTANT = 1
 
-const PRODUCTION_CONSTANT = 0.001
+const PRODUCTION_CONSTANT = 0.1
 
 const P_DISTURBED_REMOVED   = 0.01
 const P_SATISFIED_REMOVED   = 0.01
@@ -68,10 +68,12 @@ func _ready():
 func _process(delta):
 	add_time(delta)
 
-	compute_production()
+	compute_production(delta)
+	compute_coworkers_indicators(delta)
 	change_tasks_if_necessary()
 	coworkers_modifiers_check()
 	coworkers_traits_effects()
+	
 	if not stop and time_since_last_graph_append >= IRL_TIME_PER_UNIT:
 		# print("append : ", current_production)
 		current_time += 1
@@ -117,13 +119,12 @@ func _coworker_selected(coworker):
 	cwk.get_node("Avatar").copy(coworker.get_avatar())
 	cwk.get_node("FadeTimer").start()
 
-
-func compute_production():
+func compute_production(delta):
 	var prod = 0.0
 	for coworker in coworkers_list:
 		var rp = coworker.get_raw_production()
 		var pf = get_global_production_factor()
-		var p = PRODUCTION_CONSTANT * rp * pf
+		var p = PRODUCTION_CONSTANT * rp * pf * delta
 		prod += p
 		# print(rp, " : ", pf, " : ", p)
 	production_since_last_graph_append += prod
@@ -178,6 +179,10 @@ func coworkers_traits_effects():
 		if coworker.traits.has("gamer") and randf() > exp(-coworker.time_since_last_interaction / GAMING_CONSTANT ):
 			coworker.set_task("gaming") # TODO add proba to trigger gaming on others
 			print("Coworker ", index, " starts playing")
+
+func compute_coworkers_indicators(delta):
+	for coworker in coworkers_list:
+		coworker.update_indicators(delta)
 
 func check_end_game():
 	if current_production >= TARGET_PRODUCTION:

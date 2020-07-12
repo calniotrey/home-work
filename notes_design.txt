@@ -50,11 +50,12 @@ modificateurs temporaires:
 
 shitty indicators:
 
-- number of lines of code changed: (production_tick / task_type) * rand(0.5, 1.5) * task_type
+- number of lines of code changed: production_tick * rand(0.5, 1.5) * task_type
   + documentation: 2
   + refactor: 1.2
   + new feature: 1
   + architecture: 0.25
+  + bug_fix: 0
   + meeting: 0.01
   + playing: 0.01
 
