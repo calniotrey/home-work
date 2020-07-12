@@ -72,7 +72,7 @@ func _ready():
 
 	diff_graph = $VBoxContainer/Top/MainDisplay/Graphs/Diff
 	diff_graph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
-	diff_graph.MAX_VALUE = TARGET_PRODUCTION / MAX_TIME_UNIT / 2.0
+	diff_graph.MAX_VALUE = TARGET_PRODUCTION / (MAX_TIME_UNIT / 3)
 	diff_graph.average_required = TARGET_PRODUCTION / MAX_TIME_UNIT
 
 	total_graph = $VBoxContainer/Top/MainDisplay/Graphs/Total
