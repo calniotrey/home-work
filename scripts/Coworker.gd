@@ -2,10 +2,12 @@ extends PanelContainer
 
 signal selected(value)
 
-signal selected_task_signal(value)
+var TIME_MANAGEMENT = 10.0
 
-var TIME_MANAGEMENT = 1.0
+const MIN_TIME_PER_TASK = 10.0
+const MAX_TIME_PER_TASK = 30.0
 
+var id = 0
 var skill = 0.5
 var relationships = []
 var indicators = {
@@ -99,20 +101,18 @@ func set_random_task(): # TODO add difficulty impact
 		total_weight += w
 	for w in weights.keys():
 		weights[w] /= total_weight
-
+	time_spent_on_current_task = 0
 	for key in keys:
 		if r < weights[key]:
 			set_task(key)
+			return
 		else:
 			r -= weights[key]
 
-	time_spent_on_current_task = 0
-
 func set_task(task):
 	current_task = task
-	time_until_task_change = randf()*3 + 2
-	# print("Changed task : ", current_task)
-	emit_signal("selected_task_signal", self)
+	time_until_task_change = randf() * (MAX_TIME_PER_TASK - MIN_TIME_PER_TASK) + MIN_TIME_PER_TASK
+	print("Coworker ", id, " changes task : ", current_task)
 
 func speak(text):
 	$BubbleCanvas.offset = rect_global_position + rect_size/2
@@ -180,3 +180,25 @@ func get_raw_production():
 func update_indicators(delta):
 	indicators["lines"] += TASK_TO_LINES_AMOUNT.get(current_task, 1) * (0.5 + 0.5 * randf()) * delta
 	indicators["commits"] += TASK_TO_COMMITS_AMOUNT.get(current_task, 1) * (0.5 + 0.5 * randf()) * delta
+
+func debug_display(index):
+	var raw_prod = get_raw_production() # random is rerolled, but still good indicator
+	print("Coworker ", index, " produces raw ", raw_prod, " and works on ", current_task)
+	if traits.has("autonomous"):
+		print("Coworker ", index, " is autonomous")
+	elif traits.has("slacker"):
+		print("Coworker ", index, " is a slacker")
+	if traits.has("annoying"):
+		print("Coworker ", index, " is annoying")
+	if traits.has("ambitious"):
+		print("Coworker ", index, " is ambitious")
+	if traits.has("managophobe"):
+		print("Coworker ", index, " is managophobe")
+	if traits.has("gamer"):
+		print("Coworker ", index, " is a gamer")
+	if is_disturbed:
+		print("Coworker ", index, " is disturbed")
+	if is_satisfied:
+		print("Coworker ", index, " is satisfied")
+	elif is_angry:
+		print("Coworker ", index, " is angry")

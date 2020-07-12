@@ -26,13 +26,13 @@ var time_since_last_meeting = 0
 var total_time_elapsed = 0
 
 const ARCHI_THRESHOLD = 50
-const TIME_REFACTO_CONSTANT = 1
-const TIME_DOC_CONSTANT 	= 1
-const TIME_ARCHI_CONSTANT 	= 1
-const TIME_DEBUG_CONSTANT 	= 1
-const TIME_MEETING_CONSTANT = 1
+const TIME_REFACTO_CONSTANT = 10
+const TIME_DOC_CONSTANT     = 10
+const TIME_ARCHI_CONSTANT   = 10
+const TIME_DEBUG_CONSTANT   = 10
+const TIME_MEETING_CONSTANT = 10
 
-const PRODUCTION_CONSTANT = 0.1
+const PRODUCTION_CONSTANT = 0.5
 
 const P_DISTURBED_REMOVED   = 0.01
 const P_SATISFIED_REMOVED   = 0.01
@@ -42,6 +42,11 @@ const P_ANNOYING_EFFECT     = 0.001
 const P_AMBITIOUS_EFFECT    = 0.001
 const P_GAMING_INVITE       = 0.1
 const GAMING_CONSTANT       = 10000.0
+
+const REFACTORING_PROD      = 0.4
+const DOC_PROD              = 0.2
+const ARCHI_PROD            = 0.2
+const DEBUG_PROD            = 0.2
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -58,9 +63,11 @@ func _ready():
 	var grids = [$VBoxContainer/Top/LeftCoworkerGrid, $VBoxContainer/Top/RightCoworkerGrid]
 	for grid in grids:
 		for coworker in grid.get_children():
+			coworker.id = len(coworkers_list)
 			coworker.connect("selected", self, "_coworker_selected")
 			coworker.get_avatar().generate_face()
 			coworkers_list.append(coworker)
+			# TODO set skill
 			coworker.set_random_traits()
 			coworker.set_random_task_preference()
 			coworker.set_random_task()
@@ -79,6 +86,9 @@ func _process(delta):
 	coworkers_traits_effects()
 	
 	if not stop and time_since_last_graph_append >= IRL_TIME_PER_UNIT:
+		debug_display()
+#		for index in len(coworkers_list):
+#			coworkers_list[index].debug_display(index)
 		# print("append : ", current_production)
 		current_time += 1
 		time_since_last_graph_append -= IRL_TIME_PER_UNIT
@@ -103,16 +113,16 @@ func get_global_production_factor():
 	for refacto in refactos_list:
 		var time_since = total_time_elapsed - refacto[0]
 		var time_spent = refacto[1]
-		factor *= 1.0 + exp(-1.0 * time_since / time_spent / TIME_REFACTO_CONSTANT)
+		factor *= 1.0 + REFACTORING_PROD * exp(-1.0 * time_since / time_spent / TIME_REFACTO_CONSTANT)
 	for doc in docs_list:
 		var time_since = total_time_elapsed - doc[0]
 		var time_spent = doc[1]
-		factor *= 1.0 + .5 * exp(-1.0 * time_since / time_spent / TIME_DOC_CONSTANT)
-	factor *= 1.0 + 0.5 * min(1.0, exp(- (ARCHI_THRESHOLD - time_spent_on_archi) / TIME_ARCHI_CONSTANT))
+		factor *= 1.0 + DOC_PROD * exp(-1.0 * time_since / time_spent / TIME_DOC_CONSTANT)
+	factor *= 1.0 + ARCHI_PROD * min(1.0, exp(- (ARCHI_THRESHOLD - time_spent_on_archi) / TIME_ARCHI_CONSTANT))
 	for debug in debugs_list:
 		var time_since = total_time_elapsed - debug[0]
 		var time_spent = debug[1]
-		factor *= 1.0 + 0.2 * exp(-1.0 * time_since / time_spent / TIME_DEBUG_CONSTANT)
+		factor *= 1.0 + DEBUG_PROD * exp(-1.0 * time_since / time_spent / TIME_DEBUG_CONSTANT)
 	factor *= (0.5 + exp(-time_since_last_meeting / TIME_MEETING_CONSTANT))
 	return factor
 
@@ -214,3 +224,7 @@ func _on_start_fading():
 	tween.interpolate_property(cwk, "modulate:a", 1, 0, 3,
 							   Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween.start()
+
+func debug_display():
+	var pf = get_global_production_factor()
+	print("Global production factor ", pf)
