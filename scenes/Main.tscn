@@ -427,6 +427,20 @@ size_flags_vertical = 7
 custom_fonts/font = SubResource( 4 )
 valign = 1
 
+[node name="ClockContainer" type="PanelContainer" parent="VBoxContainer/Bottom/GlobalPanel/VBoxContainer"]
+visible = false
+margin_top = 120.0
+margin_right = 273.0
+margin_bottom = 236.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Timer" type="Timer" parent="VBoxContainer/Bottom/GlobalPanel/VBoxContainer/ClockContainer"]
+
+[node name="StressClock" parent="VBoxContainer/Bottom/GlobalPanel/VBoxContainer/ClockContainer" instance=ExtResource( 4 )]
+position = Vector2( 135, 57 )
+scale = Vector2( 0.125, 0.125 )
+
 [node name="Button" type="Button" parent="VBoxContainer/Bottom/GlobalPanel/VBoxContainer"]
 margin_top = 120.0
 margin_right = 273.0
@@ -434,17 +448,6 @@ margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "EMERGENCY MEETING"
-
-[node name="ClockContainer" type="PanelContainer" parent="VBoxContainer/Bottom/GlobalPanel"]
-visible = false
-margin_right = 273.0
-margin_bottom = 236.0
-
-[node name="Timer" type="Timer" parent="VBoxContainer/Bottom/GlobalPanel/ClockContainer"]
-
-[node name="StressClock" parent="VBoxContainer/Bottom/GlobalPanel/ClockContainer" instance=ExtResource( 4 )]
-position = Vector2( 135, 118 )
-scale = Vector2( 0.25, 0.25 )
 [connection signal="resized" from="." to="." method="_on_root_resized"]
 [connection signal="pressed" from="VBoxContainer/Top/MainDisplay/TabButtons/Total" to="VBoxContainer/Top/MainDisplay" method="_on_total_selected"]
 [connection signal="pressed" from="VBoxContainer/Top/MainDisplay/TabButtons/Diff" to="VBoxContainer/Top/MainDisplay" method="_on_diff_selected"]

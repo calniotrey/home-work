@@ -364,10 +364,12 @@ func _on_start_emergency_meeting():
 
 func open_stress_clock(duration):
 	var clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer
-	var clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer
+	var clock2 = $VBoxContainer/Bottom/GlobalPanel/VBoxContainer/ClockContainer
 	var options = $VBoxContainer/Bottom/OptionPanel/OptionContainer
+	var button = $VBoxContainer/Bottom/GlobalPanel/VBoxContainer/Button
 	var timer = $VBoxContainer/Bottom/OptionPanel/ClockContainer/Timer
 	options.visible = false
+	button.visible = false
 	clock1.visible = true
 	clock2.visible = true
 	timer.wait_time = duration
@@ -375,9 +377,11 @@ func open_stress_clock(duration):
 
 func _on_stop_stress_clock():
 	var clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer
-	var clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer
+	var clock2 = $VBoxContainer/Bottom/GlobalPanel/VBoxContainer/ClockContainer
 	var options = $VBoxContainer/Bottom/OptionPanel/OptionContainer
+	var button = $VBoxContainer/Bottom/GlobalPanel/VBoxContainer/Button
 	options.visible = true
+	button.visible = true
 	clock1.visible = false
 	clock2.visible = false
 	if coworker_managed != null:
@@ -407,9 +411,9 @@ func debug_display():
 
 func _on_root_resized():
 	var clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer
-	var clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer
+	var clock2 = $VBoxContainer/Bottom/GlobalPanel/VBoxContainer/ClockContainer
 	var stress_clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer/StressClock
-	var stress_clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer/StressClock
+	var stress_clock2 = $VBoxContainer/Bottom/GlobalPanel/VBoxContainer/ClockContainer/StressClock
 	# set to center
 	stress_clock1.position = clock1.rect_size / 2
 	stress_clock2.position = clock2.rect_size / 2
