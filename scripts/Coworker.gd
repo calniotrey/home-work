@@ -82,7 +82,7 @@ func set_random_task_preference(): # TODO add difficulty impact
 		current_prefered_task = "debug"
 	elif r < 0.8:
 		current_prefered_task = "refactoring"
-	elif r < 0.2:
+	elif r < 1:
 		current_prefered_task = "architecture"
 
 
@@ -90,12 +90,13 @@ func set_random_task(): # TODO add difficulty impact
 	var r = randf()
 
 	#    v---- for ordering purposes
-	var keys = ["feature", "documentation", "debug", "refactoring", "meeting", "gaming"]
+	var keys = ["architecture", "feature", "documentation", "debug", "refactoring", "meeting", "gaming"]
 	var weights = {
-		"feature": 0.5,
-		"documentation": 0.1,
-		"debug": 0.3,
-		"refactoring": 0.1,
+		"architecture": 1.0,
+		"feature": 5.0,
+		"documentation": 1.0,
+		"debug": 2.0,
+		"refactoring": 1.0,
 		"meeting": 0.0,
 		"gaming": 0.0
 	}
