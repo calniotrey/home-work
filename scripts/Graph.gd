@@ -8,6 +8,7 @@ export(Color) var line_color
 
 signal points_updated(points)
 
+var average_required = 0
 
 func _ready():
 	draw_graph()
@@ -36,6 +37,14 @@ func draw_graph():
 		pv.append(Vector2(currentX, currentY))
 	$Line2D.points = pv
 
+	if average_required == 0:
+		$HorizontalBar.visible = false
+	else:
+		$HorizontalBar.visible = true
+		$HorizontalBar.points = [
+			Vector2(0, maxY * (1 - float(average_required) / MAX_VALUE)),
+			Vector2(maxX, maxY * (1 - float(average_required) / MAX_VALUE))
+		]
 
 func copy_display_of(other_graph):
 	MAX_NUMBER_OF_POINTS = other_graph.MAX_NUMBER_OF_POINTS

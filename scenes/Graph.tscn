@@ -12,6 +12,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="HorizontalBar" type="Line2D" parent="."]
+points = PoolVector2Array( 917.472, 302.762 )
+width = 1.5
+default_color = Color( 0.701961, 0.0431373, 0.0901961, 1 )
+
 [node name="Line2D" type="Line2D" parent="."]
 width = 3.0
 begin_cap_mode = 1
