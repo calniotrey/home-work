@@ -9,7 +9,7 @@ var total_graph
 
 var stop = false
 
-var MAX_TIME_UNIT = 300.0
+var MAX_TIME_UNIT = 600.0
 var TARGET_PRODUCTION = 1000.0
 var IRL_TIME_PER_UNIT = 0.5 # TODO restore to 1 before getting good constants
 
