@@ -52,10 +52,10 @@ const DEBUG_PROD            = 0.2
 func _ready():
 	randomize()
 
-	diff_graph = $VBoxContainer/Top/MainDisplay/TabContainer/DiffGraph
+	diff_graph = $VBoxContainer/Top/MainDisplay/Graphs/Diff
 	diff_graph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
 	diff_graph.MAX_VALUE = TARGET_PRODUCTION / MAX_TIME_UNIT / 2.0
-	total_graph = $VBoxContainer/Top/MainDisplay/TabContainer/TotalGraph
+	total_graph = $VBoxContainer/Top/MainDisplay/Graphs/Total
 	total_graph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
 	total_graph.MAX_VALUE = TARGET_PRODUCTION
 
@@ -127,7 +127,7 @@ func get_global_production_factor():
 	return factor
 
 func _coworker_selected(coworker):
-	var cwk = $VBoxContainer/Top/MainDisplay/CurrentWorker
+	var cwk = $VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker
 	cwk.visible = true
 	cwk.modulate.a = 1
 	cwk.get_node("Avatar").copy(coworker.get_avatar())
@@ -219,7 +219,7 @@ func check_end_game():
 		get_tree().change_scene("res://scenes/Defeat.tscn")
 
 func _on_start_fading():
-	var cwk = $VBoxContainer/Top/MainDisplay/CurrentWorker
+	var cwk = $VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker
 	var tween = cwk.get_node("FadeTween")
 	tween.interpolate_property(cwk, "modulate:a", 1, 0, 3,
 							   Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
@@ -228,3 +228,4 @@ func _on_start_fading():
 func debug_display():
 	var pf = get_global_production_factor()
 	print("Global production factor ", pf)
+
