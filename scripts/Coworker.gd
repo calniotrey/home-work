@@ -154,7 +154,7 @@ func get_task_factor():
 	var task_to_production_value = {
 		"refactoring": 0.1,
 		"documentation": 0.01,
-		"debug": 0.8,
+		"debug": 0.1,
 		"feature": 1.0,
 		"architecture": 0.1,
 		"meeting": 0.0001,

@@ -21,9 +21,11 @@ var production_since_last_graph_append = 0.0
 var refactos_list = []
 var docs_list = []
 var time_spent_on_archi = 0
-var debugs_list = []
 var time_since_last_emergency_meeting = 0
 var total_time_elapsed = 0
+var to_debug = 0
+var debugging_done = 0
+
 
 const ARCHI_THRESHOLD = 50
 const TIME_REFACTO_CONSTANT = 10
@@ -33,6 +35,7 @@ const TIME_DEBUG_CONSTANT   = 10
 const TIME_MEETING_CONSTANT = 10
 
 const PRODUCTION_CONSTANT = 0.5
+const RATIO_PRODUCTION_TO_DEBUG = 0.5
 
 const P_DISTURBED_REMOVED   = 0.01
 const P_SATISFIED_REMOVED   = 0.01
@@ -58,6 +61,10 @@ const REL_POS_THRESHOLD     = 0.8
 
 const P_LIKES_FLAME         = 0.6
 const P_HATES_FLAME         = 0.2
+
+const MAX_REFACTO_FACTOR = 2.5
+const MAX_DOC_FACTOR = 2.5
+const MAX_ARCHI_FACTOR = 2
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -97,7 +104,7 @@ func _process(delta):
 	change_tasks_if_necessary()
 	coworkers_modifiers_check()
 	coworkers_traits_effects()
-	
+
 	if not stop and time_since_last_graph_append >= IRL_TIME_PER_UNIT:
 		debug_display()
 #		for index in len(coworkers_list):
@@ -108,7 +115,7 @@ func _process(delta):
 		check_end_game()
 		# print("current prod : ", current_production)
 		total_graph.add_point(current_production)
-		production_since_last_graph_append = max(0, min(diff_graph.MAX_VALUE, production_since_last_graph_append))
+		production_since_last_graph_append = min(diff_graph.MAX_VALUE, production_since_last_graph_append)
 		diff_graph.add_point(production_since_last_graph_append)
 		production_since_last_graph_append = 0
 
@@ -121,23 +128,49 @@ func add_time(delta):
 		coworker.time_spent_on_current_task += delta
 		coworker.time_since_last_interaction +=  delta
 
-func get_global_production_factor():
-	var factor = 1.0
+func get_global_production_factors():
+	var factors = {
+		"refacto": 1,
+		"doc": 1,
+		"archi": 1,
+		"debug": 1,
+		"meeting": 1
+	}
 	for refacto in refactos_list:
 		var time_since = total_time_elapsed - refacto[0]
 		var time_spent = refacto[1]
-		factor *= 1.0 + REFACTORING_PROD * exp(-1.0 * time_since / time_spent / TIME_REFACTO_CONSTANT)
+		factors['refacto'] *= 1.0 + REFACTORING_PROD * exp(
+			-1.0 * time_since / time_spent / TIME_REFACTO_CONSTANT
+		)
+
 	for doc in docs_list:
 		var time_since = total_time_elapsed - doc[0]
 		var time_spent = doc[1]
-		factor *= 1.0 + DOC_PROD * exp(-1.0 * time_since / time_spent / TIME_DOC_CONSTANT)
-	factor *= 1.0 + ARCHI_PROD * min(1.0, exp(- (ARCHI_THRESHOLD - time_spent_on_archi) / TIME_ARCHI_CONSTANT))
-	for debug in debugs_list:
-		var time_since = total_time_elapsed - debug[0]
-		var time_spent = debug[1]
-		factor *= 1.0 + DEBUG_PROD * exp(-1.0 * time_since / time_spent / TIME_DEBUG_CONSTANT)
-	factor *= (0.5 + exp(-time_since_last_emergency_meeting / TIME_MEETING_CONSTANT))
-	return factor
+		factors['doc'] *= 1.0 + DOC_PROD * exp(
+			-1.0 * time_since / time_spent / TIME_DOC_CONSTANT
+		)
+	factors['archi'] = 1.0 + ARCHI_PROD * min(
+		1.0,
+		exp(- (ARCHI_THRESHOLD - time_spent_on_archi) / TIME_ARCHI_CONSTANT)
+	)
+
+	factors['debug'] = min(1, exp(-1 * (to_debug - debugging_done)))
+
+
+	factors['meeting'] = (0.5 + exp(-time_since_last_emergency_meeting / TIME_MEETING_CONSTANT))
+
+	factors['refacto'] = min(factors['refacto'], MAX_REFACTO_FACTOR)
+	factors['documentation'] = min(factors['refacto'], MAX_DOC_FACTOR)
+	factors['archi'] = min(factors['archi'], MAX_ARCHI_FACTOR)
+
+	return factors
+
+func get_global_production_factor():
+	var factors = get_global_production_factors()
+	var total_factor = 1
+	for factor in factors.values():
+		total_factor *= factor
+	return total_factor
 
 func _coworker_selected(coworker):
 	var cwk = $VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker
@@ -161,7 +194,12 @@ func _coworker_selected(coworker):
 func compute_production(delta):
 	var prod = 0.0
 	for coworker in coworkers_list:
+		if coworker.current_task == 'debug':
+			debugging_done += coworker.time_spent_on_current_task * coworker.skill
+			debugging_done = min(debugging_done, to_debug)
+
 		var rp = coworker.get_raw_production()
+		to_debug += PRODUCTION_CONSTANT * rp * delta * RATIO_PRODUCTION_TO_DEBUG
 		var pf = get_global_production_factor()
 		var p = PRODUCTION_CONSTANT * rp * pf * delta
 		prod += p
@@ -179,7 +217,7 @@ func change_tasks_if_necessary():
 			elif coworker.current_task == "documentation":
 				docs_list.append(new_elem)
 			elif coworker.current_task == "debug":
-				debugs_list.append(new_elem)
+				pass
 			elif coworker.current_task == "refactoring":
 				refactos_list.append(new_elem)
 			elif coworker.current_task == "architecture":
