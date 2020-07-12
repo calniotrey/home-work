@@ -10,7 +10,7 @@ var total_graph
 var stop = false
 
 var MAX_TIME_UNIT = 600.0
-var TARGET_PRODUCTION = 1000.0
+var TARGET_PRODUCTION = 300
 var IRL_TIME_PER_UNIT = 0.5 # TODO restore to 1 before getting good constants
 
 var current_production = 0.0
@@ -35,8 +35,8 @@ const TIME_ARCHI_CONSTANT   = 10
 const TIME_DEBUG_CONSTANT   = 10
 const TIME_MEETING_CONSTANT = 10
 
-const PRODUCTION_CONSTANT = 0.5
-const RATIO_PRODUCTION_TO_DEBUG = 0.9
+const PRODUCTION_CONSTANT = 1
+const RATIO_PRODUCTION_TO_DEBUG = 0.5
 
 const P_DISTURBED_REMOVED   = 0.01
 const P_SATISFIED_REMOVED   = 0.01
@@ -70,6 +70,9 @@ const MAX_ARCHI_FACTOR = 2
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
+
+	var game_data = get_node("/root/GameData")
+	TARGET_PRODUCTION += 100 * game_data.difficulty
 
 	diff_graph = $VBoxContainer/Top/MainDisplay/Graphs/Diff
 	diff_graph.MAX_NUMBER_OF_POINTS = MAX_TIME_UNIT
@@ -208,14 +211,14 @@ func _coworker_selected(coworker):
 	cwk.get_node("FadeTimer").start()
 
 	var basic = $VBoxContainer/Bottom/IndicatorPanel/Basic
-	
+
 	if selected_coworker != null:
 		basic.get_node("Lines/Graph").stop_copy_display_of(selected_coworker.lines_graph)
 		basic.get_node("Commits/Graph").stop_copy_display_of(selected_coworker.commits_graph)
-		
+
 	basic.get_node("Lines/Graph").copy_display_of(coworker.lines_graph)
 	basic.get_node("Commits/Graph").copy_display_of(coworker.commits_graph)
-	
+
 	selected_coworker = coworker
 
 
@@ -358,7 +361,7 @@ func _on_start_emergency_meeting():
 		coworker.set_task("meeting")
 	is_in_emergency_meeting = true
 	open_stress_clock(EMERGENCY_MEETING_DURATION)
-	
+
 func open_stress_clock(duration):
 	var clock1 = $VBoxContainer/Bottom/OptionPanel/ClockContainer
 	var clock2 = $VBoxContainer/Bottom/GlobalPanel/ClockContainer
@@ -389,7 +392,7 @@ func _on_stop_stress_clock():
 
 func _on_current_coworker_finished_fading():
 	selected_coworker = null
-	
+
 func debug_display():
 	var factors = get_global_production_factors()
 	var current_tasks = {}
@@ -415,4 +418,4 @@ func _on_root_resized():
 	var max_diameter2 = 0.9 * min(stress_clock2.position.x, stress_clock2.position.y)
 	stress_clock1.scale = Vector2( max_diameter1 / 400, max_diameter1 / 400 )
 	stress_clock2.scale = Vector2( max_diameter2 / 400, max_diameter2 / 400 )
-	
+
