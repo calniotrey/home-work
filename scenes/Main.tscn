@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/GameLogic.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Graph.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/Coworker.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/StressClock.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/Avatar.tscn" type="PackedScene" id=5]
 [ext_resource path="res://game_theme.tres" type="Theme" id=6]
 [ext_resource path="res://panel_style.tres" type="StyleBox" id=7]
@@ -127,8 +128,10 @@ line_color = Color( 0.976471, 0.698039, 0.509804, 1 )
 
 [node name="CurrentWorker" type="PanelContainer" parent="VBoxContainer/Top/MainDisplay/Graphs"]
 visible = false
-margin_right = 497.0
-margin_bottom = 312.0
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 490.0
+margin_bottom = 305.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -266,6 +269,18 @@ margin_bottom = 203.0
 size_flags_vertical = 6
 text = "Flame coworker"
 
+[node name="ClockContainer" type="PanelContainer" parent="VBoxContainer/Bottom/OptionPanel"]
+visible = false
+margin_right = 271.0
+margin_bottom = 236.0
+
+[node name="Timer" type="Timer" parent="VBoxContainer/Bottom/OptionPanel/ClockContainer"]
+one_shot = true
+
+[node name="StressClock" parent="VBoxContainer/Bottom/OptionPanel/ClockContainer" instance=ExtResource( 4 )]
+position = Vector2( 135, 118 )
+scale = Vector2( 0.25, 0.25 )
+
 [node name="IndicatorPanel" type="TabContainer" parent="VBoxContainer/Bottom"]
 margin_left = 275.0
 margin_right = 726.0
@@ -398,6 +413,24 @@ margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "EMERGENCY MEETING"
+
+[node name="ClockContainer" type="PanelContainer" parent="VBoxContainer/Bottom/GlobalPanel"]
+visible = false
+margin_right = 273.0
+margin_bottom = 236.0
+
+[node name="Timer" type="Timer" parent="VBoxContainer/Bottom/GlobalPanel/ClockContainer"]
+
+[node name="StressClock" parent="VBoxContainer/Bottom/GlobalPanel/ClockContainer" instance=ExtResource( 4 )]
+position = Vector2( 135, 118 )
+scale = Vector2( 0.25, 0.25 )
+[connection signal="resized" from="." to="." method="_on_root_resized"]
 [connection signal="pressed" from="VBoxContainer/Top/MainDisplay/TabButtons/Total" to="VBoxContainer/Top/MainDisplay" method="_on_total_selected"]
 [connection signal="pressed" from="VBoxContainer/Top/MainDisplay/TabButtons/Diff" to="VBoxContainer/Top/MainDisplay" method="_on_diff_selected"]
 [connection signal="timeout" from="VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker/FadeTimer" to="." method="_on_start_fading"]
+[connection signal="tween_all_completed" from="VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker/FadeTween" to="." method="_on_current_coworker_finished_fading"]
+[connection signal="button_down" from="VBoxContainer/Bottom/OptionPanel/OptionContainer/Meeting" to="." method="_on_manage_coworker"]
+[connection signal="item_selected" from="VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/ChangeTask/Switch" to="." method="_on_assign_task_to_coworker"]
+[connection signal="button_down" from="VBoxContainer/Bottom/OptionPanel/OptionContainer/Flame" to="." method="_on_flaming_coworker"]
+[connection signal="timeout" from="VBoxContainer/Bottom/OptionPanel/ClockContainer/Timer" to="." method="_on_stop_stress_clock"]
+[connection signal="button_down" from="VBoxContainer/Bottom/GlobalPanel/VBoxContainer/Button" to="." method="_on_start_emergency_meeting"]
