@@ -14,6 +14,7 @@ var indicators = {
 	"lines": 0.0,
 	"commits": 0.0
 }
+
 var time_since_last_interaction = 0.0
 var current_task = null
 var current_prefered_task = null
@@ -28,6 +29,9 @@ var is_angry = false
 
 # Traits
 var traits = []
+
+onready var lines_graph = $Graphs/Lines
+onready var commits_graph = $Graphs/Commits
 
 const TASK_TO_LINES_AMOUNT = {
 	"documentation": 2.0,
@@ -52,6 +56,7 @@ func _ready():
 	$SpeakTimer.wait_time = randf() * 400
 	$SpeakTimer.start()
 
+
 func set_random_traits(): # TODO add difficulty impact
 	if randf() < 0.2:
 		traits.append("autonomous")
@@ -66,6 +71,7 @@ func set_random_traits(): # TODO add difficulty impact
 	if randf() < 0.1:
 		traits.append("gamer")
 
+
 func set_random_task_preference(): # TODO add difficulty impact
 	var r = randf()
 	if r < 0.2:
@@ -78,6 +84,7 @@ func set_random_task_preference(): # TODO add difficulty impact
 		current_prefered_task = "refactoring"
 	elif r < 0.2:
 		current_prefered_task = "architecture"
+
 
 func set_random_task(): # TODO add difficulty impact
 	var r = randf()
@@ -109,10 +116,12 @@ func set_random_task(): # TODO add difficulty impact
 		else:
 			r -= weights[key]
 
+
 func set_task(task):
 	current_task = task
 	time_until_task_change = randf() * (MAX_TIME_PER_TASK - MIN_TIME_PER_TASK) + MIN_TIME_PER_TASK
 	print("Coworker ", id, " changes task : ", current_task)
+
 
 func speak(text):
 	$BubbleCanvas.offset = rect_global_position + rect_size/2
@@ -174,12 +183,22 @@ func get_modifiers_factor():
 		factor *= 0.5
 	return factor
 
+
 func get_raw_production():
 	return (randf() * 0.2 + 0.8) * skill * get_managed_factor() * get_task_factor() * get_modifiers_factor()
 
+
 func update_indicators(delta):
-	indicators["lines"] += TASK_TO_LINES_AMOUNT.get(current_task, 1) * (0.5 + 0.5 * randf()) * delta
-	indicators["commits"] += TASK_TO_COMMITS_AMOUNT.get(current_task, 1) * (0.5 + 0.5 * randf()) * delta
+	var random_factor = (0.5 + 0.5 * randf()) * delta
+	var line_prod = TASK_TO_LINES_AMOUNT.get(current_task, 1) * random_factor
+	indicators["lines"] += line_prod
+	$Graphs/Lines.add_point(line_prod)
+	
+	random_factor = (0.5 + 0.5 * randf()) * delta
+	var commit_prod = TASK_TO_COMMITS_AMOUNT.get(current_task, 1) * random_factor
+	indicators["commits"] += commit_prod
+	$Graphs/Commits.add_point(commit_prod)
+
 
 func debug_display(index):
 	var raw_prod = get_raw_production() # random is rerolled, but still good indicator

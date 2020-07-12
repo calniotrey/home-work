@@ -3,6 +3,7 @@ extends Control
 onready var Coworker = preload("res://scenes/Coworker.tscn")
 
 var coworkers_list = []
+var selected_coworker = null
 
 var diff_graph
 var total_graph
@@ -132,6 +133,18 @@ func _coworker_selected(coworker):
 	cwk.modulate.a = 1
 	cwk.get_node("Avatar").copy(coworker.get_avatar())
 	cwk.get_node("FadeTimer").start()
+	
+	var basic = $VBoxContainer/Bottom/IndicatorPanel/Basic
+	
+	if selected_coworker != null:
+		basic.get_node("Lines/Graph").stop_copy_display_of(selected_coworker.lines_graph)
+		basic.get_node("Commits/Graph").stop_copy_display_of(selected_coworker.commits_graph)
+		
+	basic.get_node("Lines/Graph").copy_display_of(coworker.lines_graph)
+	basic.get_node("Commits/Graph").copy_display_of(coworker.commits_graph)
+	
+	selected_coworker = coworker
+
 
 func compute_production(delta):
 	var prod = 0.0

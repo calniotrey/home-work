@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/GameLogic.gd" type="Script" id=1]
 [ext_resource path="res://scenes/Graph.tscn" type="PackedScene" id=2]
@@ -14,8 +14,6 @@
 [sub_resource type="Theme" id=2]
 
 [sub_resource type="StyleBoxEmpty" id=3]
-
-[sub_resource type="StyleBoxEmpty" id=4]
 
 [node name="Root" type="Control"]
 anchor_right = 1.0
@@ -118,6 +116,7 @@ margin_top = 7.0
 margin_right = 490.0
 margin_bottom = 305.0
 custom_styles/panel = ExtResource( 7 )
+line_color = Color( 0.756863, 0.705882, 0.705882, 1 )
 
 [node name="Diff" parent="VBoxContainer/Top/MainDisplay/Graphs" instance=ExtResource( 2 )]
 visible = false
@@ -127,6 +126,7 @@ margin_right = 490.0
 margin_bottom = 7.0
 theme = ExtResource( 6 )
 custom_styles/panel = ExtResource( 7 )
+line_color = Color( 0.976471, 0.698039, 0.509804, 1 )
 
 [node name="CurrentWorker" type="PanelContainer" parent="VBoxContainer/Top/MainDisplay/Graphs"]
 visible = false
@@ -182,9 +182,10 @@ margin_right = 1003.52
 margin_bottom = 588.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+alignment = 1
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/Bottom"]
-margin_right = 312.0
+[node name="OptionPanel" type="PanelContainer" parent="VBoxContainer/Bottom"]
+margin_right = 271.0
 margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -192,32 +193,32 @@ size_flags_stretch_ratio = 1.1
 theme = ExtResource( 6 )
 custom_styles/panel = ExtResource( 7 )
 
-[node name="Options" type="VBoxContainer" parent="VBoxContainer/Bottom/PanelContainer"]
-margin_right = 312.0
+[node name="OptionContainer" type="VBoxContainer" parent="VBoxContainer/Bottom/OptionPanel"]
+margin_right = 271.0
 margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 6 )
 
-[node name="Meeting" type="Button" parent="VBoxContainer/Bottom/PanelContainer/Options"]
+[node name="Meeting" type="Button" parent="VBoxContainer/Bottom/OptionPanel/OptionContainer"]
 margin_top = 33.0
-margin_right = 312.0
+margin_right = 271.0
 margin_bottom = 57.0
 size_flags_vertical = 6
 text = "Start personal meeting"
 
-[node name="ChangeTask" type="VBoxContainer" parent="VBoxContainer/Bottom/PanelContainer/Options"]
+[node name="ChangeTask" type="VBoxContainer" parent="VBoxContainer/Bottom/OptionPanel/OptionContainer"]
 margin_top = 94.0
-margin_right = 312.0
+margin_right = 271.0
 margin_bottom = 142.0
 
-[node name="CurrentTask" type="HBoxContainer" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask"]
-margin_right = 312.0
+[node name="CurrentTask" type="HBoxContainer" parent="VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask"]
+margin_right = 271.0
 margin_bottom = 20.0
 size_flags_vertical = 6
 
-[node name="Label" type="Label" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/CurrentTask"]
-margin_right = 154.0
+[node name="Label" type="Label" parent="VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/CurrentTask"]
+margin_right = 133.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -225,9 +226,9 @@ text = "Current task: "
 align = 1
 valign = 1
 
-[node name="TaskName" type="Label" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/CurrentTask"]
-margin_left = 158.0
-margin_right = 312.0
+[node name="TaskName" type="Label" parent="VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/CurrentTask"]
+margin_left = 137.0
+margin_right = 271.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -235,14 +236,14 @@ text = "unkown"
 align = 1
 valign = 1
 
-[node name="ChangeTask" type="HBoxContainer" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask"]
+[node name="ChangeTask" type="HBoxContainer" parent="VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask"]
 margin_top = 24.0
-margin_right = 312.0
+margin_right = 271.0
 margin_bottom = 48.0
 size_flags_vertical = 6
 
-[node name="Label" type="Label" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/ChangeTask"]
-margin_right = 154.0
+[node name="Label" type="Label" parent="VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/ChangeTask"]
+margin_right = 137.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -250,9 +251,9 @@ text = "Force  to work on"
 align = 1
 valign = 1
 
-[node name="Switch" type="OptionButton" parent="VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/ChangeTask"]
-margin_left = 158.0
-margin_right = 312.0
+[node name="Switch" type="OptionButton" parent="VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/ChangeTask"]
+margin_left = 141.0
+margin_right = 271.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "choose one"
@@ -263,31 +264,82 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Flame" type="Button" parent="VBoxContainer/Bottom/PanelContainer/Options"]
+[node name="Flame" type="Button" parent="VBoxContainer/Bottom/OptionPanel/OptionContainer"]
 margin_top = 179.0
-margin_right = 312.0
+margin_right = 271.0
 margin_bottom = 203.0
 size_flags_vertical = 6
 text = "Flame coworker"
 
-[node name="Indicators" type="CenterContainer" parent="VBoxContainer/Bottom"]
-margin_left = 316.0
-margin_right = 714.0
+[node name="IndicatorPanel" type="TabContainer" parent="VBoxContainer/Bottom"]
+margin_left = 275.0
+margin_right = 726.0
 margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 1.4
+size_flags_stretch_ratio = 1.83
+theme = ExtResource( 6 )
+custom_styles/panel = ExtResource( 7 )
 
-[node name="RedButton" type="PanelContainer" parent="VBoxContainer/Bottom"]
-margin_left = 718.0
+[node name="Basic" type="HSplitContainer" parent="VBoxContainer/Bottom/IndicatorPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 24.0
+
+[node name="Lines" type="VBoxContainer" parent="VBoxContainer/Bottom/IndicatorPanel/Basic"]
+margin_right = 219.0
+margin_bottom = 212.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/Bottom/IndicatorPanel/Basic/Lines"]
+margin_right = 219.0
+margin_bottom = 20.0
+text = "Lines of code written"
+align = 1
+
+[node name="Graph" parent="VBoxContainer/Bottom/IndicatorPanel/Basic/Lines" instance=ExtResource( 2 )]
+margin_top = 24.0
+margin_right = 219.0
+margin_bottom = 212.0
+
+[node name="Commits" type="VBoxContainer" parent="VBoxContainer/Bottom/IndicatorPanel/Basic"]
+margin_left = 231.0
+margin_right = 451.0
+margin_bottom = 212.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/Bottom/IndicatorPanel/Basic/Commits"]
+margin_right = 220.0
+margin_bottom = 20.0
+text = "Commits pushed"
+align = 1
+
+[node name="Graph" parent="VBoxContainer/Bottom/IndicatorPanel/Basic/Commits" instance=ExtResource( 2 )]
+margin_top = 24.0
+margin_right = 220.0
+margin_bottom = 212.0
+
+[node name="Advanced" type="Control" parent="VBoxContainer/Bottom/IndicatorPanel"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 24.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MeetingPanel" type="PanelContainer" parent="VBoxContainer/Bottom"]
+margin_left = 730.0
 margin_right = 1003.0
 margin_bottom = 236.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_styles/panel = SubResource( 4 )
+size_flags_stretch_ratio = 1.1
+theme = ExtResource( 6 )
+custom_styles/panel = ExtResource( 7 )
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/Bottom/RedButton"]
-margin_right = 285.0
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/Bottom/MeetingPanel"]
+margin_right = 273.0
 margin_bottom = 236.0
 texture = ExtResource( 4 )
 expand = true
