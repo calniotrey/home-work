@@ -1,9 +1,8 @@
 extends Control
 
-onready var Coworker = preload("res://scenes/Coworker.tscn")
-
 var coworkers_list = []
 var selected_coworker = null
+var coworker_managed = null
 
 var diff_graph
 var total_graph
@@ -23,7 +22,7 @@ var refactos_list = []
 var docs_list = []
 var time_spent_on_archi = 0
 var debugs_list = []
-var time_since_last_meeting = 0
+var time_since_last_emergency_meeting = 0
 var total_time_elapsed = 0
 
 const ARCHI_THRESHOLD = 50
@@ -48,6 +47,17 @@ const REFACTORING_PROD      = 0.4
 const DOC_PROD              = 0.2
 const ARCHI_PROD            = 0.2
 const DEBUG_PROD            = 0.2
+
+const MEETING_DURATION      = 1.0
+const ASSIGN_TASK_DURATION  = 5.0
+const FLAME_DURATION        = 3.0
+const EMERGENCY_MEETING_DURATION = 10.0
+
+const REL_NEG_THRESHOLD     = 0.2
+const REL_POS_THRESHOLD     = 0.8
+
+const P_LIKES_FLAME         = 0.6
+const P_HATES_FLAME         = 0.2
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -103,7 +113,7 @@ func _process(delta):
 func add_time(delta):
 	total_time_elapsed += delta
 	time_since_last_graph_append += delta
-	time_since_last_meeting += delta
+	time_since_last_emergency_meeting += delta
 	for coworker in coworkers_list:
 		coworker.time_until_task_change -= delta
 		coworker.time_spent_on_current_task += delta
@@ -124,7 +134,7 @@ func get_global_production_factor():
 		var time_since = total_time_elapsed - debug[0]
 		var time_spent = debug[1]
 		factor *= 1.0 + DEBUG_PROD * exp(-1.0 * time_since / time_spent / TIME_DEBUG_CONSTANT)
-	factor *= (0.5 + exp(-time_since_last_meeting / TIME_MEETING_CONSTANT))
+	factor *= (0.5 + exp(-time_since_last_emergency_meeting / TIME_MEETING_CONSTANT))
 	return factor
 
 func _coworker_selected(coworker):
@@ -133,7 +143,7 @@ func _coworker_selected(coworker):
 	cwk.modulate.a = 1
 	cwk.get_node("Avatar").copy(coworker.get_avatar())
 	cwk.get_node("FadeTimer").start()
-	
+
 	var basic = $VBoxContainer/Bottom/IndicatorPanel/Basic
 	
 	if selected_coworker != null:
@@ -160,7 +170,7 @@ func compute_production(delta):
 
 func change_tasks_if_necessary():
 	for coworker in coworkers_list:
-		if coworker.time_until_task_change <= 0:
+		if coworker.time_until_task_change <= 0 and coworker.current_task != "meeting":
 			var new_elem = [total_time_elapsed, coworker.time_spent_on_current_task]
 			if coworker.current_task == "feature":
 				pass
@@ -238,7 +248,70 @@ func _on_start_fading():
 							   Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	tween.start()
 
+func _on_Meeting_button_down():
+	if selected_coworker != null:
+		selected_coworker.time_since_last_interaction = 0
+		selected_coworker.set_task("meeting")
+		coworker_managed = selected_coworker
+		open_stress_clock(MEETING_DURATION)
+
+func _on_Switch_item_selected(index):
+	var switch = $VBoxContainer/Bottom/PanelContainer/Options/ChangeTask/ChangeTask/Switch
+	if selected_coworker != null and index > 0 and index < 4:
+		if index == 1:
+			selected_coworker.set_task("debug")
+		elif index == 2:
+			selected_coworker.set_task("feature")
+		elif index == 3:
+			selected_coworker.set_task("documentation")
+		selected_coworker.time_since_last_interaction = 0
+		coworker_managed = selected_coworker
+		open_stress_clock(ASSIGN_TASK_DURATION)
+	switch.select(0)
+
+func _on_Flame_button_down():
+	if selected_coworker != null:
+		selected_coworker.time_since_last_interaction = 0
+		for coworker in coworkers_list:
+			if coworker != selected_coworker:
+				var rel = coworker.relationships[selected_coworker.id]
+				if rel < REL_NEG_THRESHOLD and randf() < P_LIKES_FLAME:
+					coworker.is_satisfied = true
+					coworker.is_angry     = false
+				elif rel > REL_POS_THRESHOLD and randf() < P_HATES_FLAME:
+					coworker.is_satisfied = false
+					coworker.is_angry     = true
+		coworker_managed = selected_coworker
+		open_stress_clock(FLAME_DURATION)
+
+func _on_RedButton_gui_input(event):
+	if event is InputEventMouseButton and event.is_pressed():
+		for coworker in coworkers_list:
+			coworker.time_since_last_interaction = 0
+			coworker.set_task("meeting")
+		time_since_last_emergency_meeting = 0
+		open_stress_clock(EMERGENCY_MEETING_DURATION)
+	
+func open_stress_clock(duration):
+	var clock = $VBoxContainer/Bottom/PanelContainer/Clock
+	var options = $VBoxContainer/Bottom/PanelContainer/Options
+	var timer = $VBoxContainer/Bottom/PanelContainer/Clock/Timer
+	options.visible = false
+	clock.visible = true
+	timer.wait_time = duration
+	timer.start()
+
+func _on_Timer_timeout():
+	var clock = $VBoxContainer/Bottom/PanelContainer/Clock
+	var options = $VBoxContainer/Bottom/PanelContainer/Options
+	options.visible = true
+	clock.visible = false
+	if coworker_managed != null:
+		coworker_managed.set_random_task()
+
+func _on_FadeTween_tween_all_completed():
+	selected_coworker = null
+	
 func debug_display():
 	var pf = get_global_production_factor()
 	print("Global production factor ", pf)
-

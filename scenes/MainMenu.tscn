@@ -29,6 +29,9 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color( 0.0980392, 0.0509804, 0.109804, 1 )
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Label" type="Label" parent="."]
 anchor_left = 0.293
