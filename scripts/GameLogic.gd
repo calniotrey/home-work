@@ -2,7 +2,6 @@ extends Control
 
 onready var Coworker = preload("res://scenes/Coworker.tscn")
 
-var coworkerSelected = null
 var coworkers_list = []
 
 var diff_graph
@@ -11,8 +10,8 @@ var total_graph
 var stop = false
 
 var MAX_TIME_UNIT = 300.0
-var TARGET_PRODUCTION = 10.0
-var IRL_TIME_PER_UNIT = 0.05 # TODO restore to 1 before getting good constants
+var TARGET_PRODUCTION = 1000.0
+var IRL_TIME_PER_UNIT = 0.5 # TODO restore to 1 before getting good constants
 
 var current_production = 0.0
 var current_time = 0.0
@@ -41,6 +40,7 @@ const P_ANGRY_REMOVED       = 0.01
 
 const P_ANNOYING_EFFECT     = 0.001
 const P_AMBITIOUS_EFFECT    = 0.001
+const P_GAMING_INVITE       = 0.1
 const GAMING_CONSTANT       = 10000.0
 
 # Called when the node enters the scene tree for the first time.
@@ -64,6 +64,10 @@ func _ready():
 			coworker.set_random_traits()
 			coworker.set_random_task_preference()
 			coworker.set_random_task()
+	for coworker_index in len(coworkers_list):
+		for coworker_target_index in len(coworkers_list):
+			coworkers_list[coworker_index].relationships.append(randf())
+		coworkers_list[coworker_index].relationships[coworker_index] = 1 # likes himself
 
 func _process(delta):
 	add_time(delta)
@@ -169,16 +173,28 @@ func coworkers_traits_effects():
 			if random_index >= index: # remove possibility to get same coworker
 				random_index += 1
 			coworkers_list[random_index].is_disturbed = true
+			coworkers_list[random_index].relationships[index] *= 0.6 + 0.2*randf()
 			print("Coworker ", index, " disturbs coworker ", random_index)
 		if coworker.traits.has("ambitious") and randf() < P_AMBITIOUS_EFFECT:
 			var random_index = randi() % (len(coworkers_list) - 1)
 			if random_index >= index: # remove possibility to get same coworker
 				random_index += 1
-			coworkers_list[random_index].time_since_last_interaction = 0
+			var random_coworker = coworkers_list[random_index]
+			random_coworker.time_since_last_interaction = 0
+			random_coworker.relationships[index] *= 0.4 + 0.8*randf() # can increase, but unlikely
+			random_coworker.relationships[index] = min(1.0, random_coworker.relationships[index])
 			print("Coworker ", index, " 'manages' coworker ", random_index)
 		if coworker.traits.has("gamer") and randf() > exp(-coworker.time_since_last_interaction / GAMING_CONSTANT ):
-			coworker.set_task("gaming") # TODO add proba to trigger gaming on others
+			coworker.set_task("gaming")
 			print("Coworker ", index, " starts playing")
+			# Invite other gamers
+			for target_index in len(coworkers_list): # can invite himself, does nothing
+				var coworker_target = coworkers_list[target_index]
+				if coworker_target.traits.has("gamer") and randf() < P_GAMING_INVITE:
+					print("Coworker ", index, " invites coworker ", target_index, " for a game")
+					coworker_target.set_task("gaming")
+					coworker_target.relationships[index] *= 0.8 + 0.6*randf()
+					coworker_target.relationships[index] = min(1.0, coworker_target.relationships[index])
 
 func compute_coworkers_indicators(delta):
 	for coworker in coworkers_list:

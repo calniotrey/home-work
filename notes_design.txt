@@ -16,10 +16,10 @@ default mngt_func: 1/2 * (exp(-delta_time) - 1)
 character traits:
 - autonomous: mngt_func: 1/2 * (2 - exp(-delta_time))
 - slacker: mngt_func: exp(-3 * delta_time)
-- annoying: adds "disturbed" to random coworker at P(annoying) = AnnoyingCst (in [0;1])
-- ambitious: resets delta_time of coworkers left unchecked by the player
+- annoying: adds "disturbed" to random coworker at P(annoying) = AnnoyingCst (in [0;1]), reduces relationship from target
+- ambitious: resets delta_time of coworkers left unchecked by the player, reduces relationship from target
 - hates being managed: c.f. autonomous' mngt_func
-- gamer: triggers "playing" at P(playing) = exp(-delta_time). Can trigger 'playing' on other gamers.
+- gamer: triggers "playing" at P(playing) = exp(-delta_time). Can trigger 'playing' on other gamers, augments relationship from target
 
 ----
 
