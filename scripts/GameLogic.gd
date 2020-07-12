@@ -214,6 +214,14 @@ func get_global_production_factor():
 	return total_factor
 
 func _coworker_selected(coworker):
+	$VBoxContainer/Bottom/OptionPanel/NoCoworker.visible = false
+	$VBoxContainer/Bottom/OptionPanel/NoCoworker.visible = false
+	$VBoxContainer/Bottom/OptionPanel/OptionContainer.visible = true
+	$VBoxContainer/Bottom/IndicatorPanel/Basic/Lines/NoCoworker.visible = false
+	$VBoxContainer/Bottom/IndicatorPanel/Basic/Commits/NoCoworker.visible = false
+	$VBoxContainer/Bottom/IndicatorPanel/Basic/Lines/Graph.visible = true
+	$VBoxContainer/Bottom/IndicatorPanel/Basic/Commits/Graph.visible = true
+
 	var cwk = $VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker
 	var task_name = $VBoxContainer/Bottom/IndicatorPanel/CurrentTask/TaskName
 	cwk.visible = true
@@ -421,6 +429,12 @@ func _on_stop_stress_clock():
 
 func _on_current_coworker_finished_fading():
 	selected_coworker = null
+	$VBoxContainer/Bottom/OptionPanel/NoCoworker.visible = true
+	$VBoxContainer/Bottom/OptionPanel/OptionContainer.visible = false
+	$VBoxContainer/Bottom/IndicatorPanel/Basic/Lines/NoCoworker.visible = true
+	$VBoxContainer/Bottom/IndicatorPanel/Basic/Commits/NoCoworker.visible = true
+	$VBoxContainer/Bottom/IndicatorPanel/Basic/Lines/Graph.visible = false
+	$VBoxContainer/Bottom/IndicatorPanel/Basic/Commits/Graph.visible = false
 
 func debug_display():
 	var factors = get_global_production_factors()
