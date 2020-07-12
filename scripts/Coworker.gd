@@ -40,7 +40,7 @@ const TASK_TO_LINES_AMOUNT = {
 	"refactoring": 1.2,
 	"feature": 1.0,
 	"architecture": 0.25,
-	"debug": 0.0,
+	"debug": 0.7,
 	"meeting": 0.01,
 	"gaming": 0.01
 }
@@ -48,7 +48,7 @@ const TASK_TO_COMMITS_AMOUNT = {
 	"documentation": 0.4,
 	"refactoring": 1.2,
 	"feature": 1.0,
-	"architecture": 0.0,
+	"architecture": 0.2,
 	"debug": 2.0,
 	"meeting": 0.01,
 	"gaming": 0.01
