@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://fonts/Galada/Galada-Regular.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://game_theme.tres" type="Theme" id=2]
 [ext_resource path="res://scripts/Victory.gd" type="Script" id=3]
+[ext_resource path="res://scenes/MoneyParticle.tscn" type="PackedScene" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 size = 80
@@ -29,6 +30,9 @@ color = Color( 0.380392, 0.329412, 0.392157, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="MoneyParticle" parent="." instance=ExtResource( 4 )]
+position = Vector2( 506.33, -112.748 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -71,4 +75,5 @@ margin_right = 663.0
 margin_bottom = 103.0
 custom_fonts/font = SubResource( 2 )
 text = "  Onward for new profits  "
+[connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="pressed" from="VBoxContainer/CenterContainerButton/Button" to="." method="_on_continue"]
