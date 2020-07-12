@@ -336,7 +336,7 @@ func _on_assign_task_to_coworker(index):
 		elif index == 3:
 			selected_coworker.set_task("documentation")
 		selected_coworker.time_since_last_interaction = 0
-		coworker_managed = selected_coworker
+		coworker_managed = null
 		open_stress_clock(ASSIGN_TASK_DURATION)
 	switch.select(0)
 
