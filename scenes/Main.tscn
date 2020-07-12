@@ -164,20 +164,24 @@ columns = 2
 [node name="Coworker5" parent="VBoxContainer/Top/RightCoworkerGrid" instance=ExtResource( 3 )]
 margin_right = 123.0
 margin_bottom = 168.0
+side = "right"
 
 [node name="Coworker6" parent="VBoxContainer/Top/RightCoworkerGrid" instance=ExtResource( 3 )]
 margin_left = 127.0
 margin_bottom = 168.0
+side = "right"
 
 [node name="Coworker7" parent="VBoxContainer/Top/RightCoworkerGrid" instance=ExtResource( 3 )]
 margin_top = 172.0
 margin_right = 123.0
 margin_bottom = 340.0
+side = "right"
 
 [node name="Coworker8" parent="VBoxContainer/Top/RightCoworkerGrid" instance=ExtResource( 3 )]
 margin_left = 127.0
 margin_top = 172.0
 margin_bottom = 340.0
+side = "right"
 
 [node name="Bottom" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 352.0

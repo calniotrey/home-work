@@ -101,6 +101,9 @@ const DIALOGS = {
 }
 
 
+export var side = "left"
+
+
 func _ready():
 	game_data = get_node("/root/GameData")
 	plan_to_speak()
@@ -180,6 +183,11 @@ func plan_to_speak():
 
 func speak(text):
 	$BubbleCanvas.offset = rect_global_position + rect_size/2
+	$BubbleCanvas.offset.y -= rect_size.y/4
+	
+	if side == "right":
+		$BubbleCanvas.offset.x -= $BubbleCanvas/Bubble.rect_size.x
+
 	$BubbleCanvas/Bubble/Text.text = text
 	$BubbleCanvas/Bubble/Timer.start()
 	$BubbleCanvas/Bubble.visible = true
