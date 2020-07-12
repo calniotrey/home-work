@@ -239,7 +239,7 @@ margin_right = 271.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "unkown"
+text = "Unkown"
 align = 1
 valign = 1
 
@@ -265,7 +265,7 @@ margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "choose one"
 align = 1
-items = [ "choose one", null, false, 0, false, "Debug", null, false, 1, false, "Code", null, false, 2, false, "Document", null, false, 3, null ]
+items = [ "choose one", null, false, 0, false, "Debug", null, false, 1, false, "Code", null, false, 2, false, "Document", null, false, 3, null, "Refacto", null, false, 4, null ]
 selected = 0
 __meta__ = {
 "_edit_use_anchors_": false

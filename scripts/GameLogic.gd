@@ -67,6 +67,16 @@ const MAX_REFACTO_FACTOR = 2.5
 const MAX_DOC_FACTOR = 2.5
 const MAX_ARCHI_FACTOR = 2
 
+const TASK_TO_STRING = {
+	"documentation": "Documentation",
+	"refactoring": "Refactoring",
+	"feature": "Feature",
+	"architecture": "Architecture",
+	"debug": "Debugging",
+	"meeting": "Meeting",
+	"gaming": "Playing"
+}
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
@@ -205,12 +215,18 @@ func get_global_production_factor():
 
 func _coworker_selected(coworker):
 	var cwk = $VBoxContainer/Top/MainDisplay/Graphs/CurrentWorker
+	var task_name = $VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/CurrentTask/TaskName
 	cwk.visible = true
 	cwk.modulate.a = 1
 	cwk.get_node("Avatar").copy(coworker.get_avatar())
 	cwk.get_node("FadeTimer").start()
 
 	var basic = $VBoxContainer/Bottom/IndicatorPanel/Basic
+
+	if coworker.is_current_task_known:
+		task_name.text = TASK_TO_STRING.get(coworker.current_task, "Unknown")
+	else:
+		task_name.text = "Unknown"
 
 	if selected_coworker != null:
 		basic.get_node("Lines/Graph").stop_copy_display_of(selected_coworker.lines_graph)
@@ -255,6 +271,13 @@ func change_tasks_if_necessary():
 				time_spent_on_archi += coworker.time_spent_on_current_task
 
 			coworker.set_random_task()
+	if selected_coworker != null:
+		var task_name = $VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/CurrentTask/TaskName
+		if selected_coworker.is_current_task_known:
+			task_name.text = TASK_TO_STRING.get(selected_coworker.current_task, "Unknown")
+		else:
+			task_name.text = "Unknown"
+		
 
 func coworkers_modifiers_check():
 	for index in len(coworkers_list):
@@ -323,18 +346,23 @@ func _on_manage_coworker():
 	if selected_coworker != null:
 		selected_coworker.time_since_last_interaction = 0
 		selected_coworker.set_task("meeting")
+		var task_name = $VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/CurrentTask/TaskName
+		task_name.text = TASK_TO_STRING.get(selected_coworker.current_task, "Unknown")
+		selected_coworker.is_current_task_known = true
 		coworker_managed = selected_coworker
 		open_stress_clock(MEETING_DURATION)
 
 func _on_assign_task_to_coworker(index):
 	var switch = $VBoxContainer/Bottom/OptionPanel/OptionContainer/ChangeTask/ChangeTask/Switch
-	if selected_coworker != null and index > 0 and index < 4:
+	if selected_coworker != null and index > 0 and index < 5:
 		if index == 1:
 			selected_coworker.set_task("debug")
 		elif index == 2:
 			selected_coworker.set_task("feature")
 		elif index == 3:
 			selected_coworker.set_task("documentation")
+		elif index == 4:
+			selected_coworker.set_task("refacto")
 		selected_coworker.time_since_last_interaction = 0
 		coworker_managed = null
 		open_stress_clock(ASSIGN_TASK_DURATION)

@@ -7,6 +7,7 @@ var TIME_MANAGEMENT = 10.0
 const MIN_TIME_PER_TASK = 10.0
 const MAX_TIME_PER_TASK = 30.0
 
+var is_current_task_known = false
 var id = 0
 var skill = 0.5
 var relationships = []
