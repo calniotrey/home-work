@@ -353,5 +353,12 @@ func _on_FadeTween_tween_all_completed():
 	selected_coworker = null
 	
 func debug_display():
-	var pf = get_global_production_factor()
-	print("Global production factor ", pf)
+	var factors = get_global_production_factors()
+	var current_tasks = {}
+	for cow in coworkers_list:
+		var task = cow.current_task
+		if not task in current_tasks:
+			current_tasks[task] = 0
+		current_tasks[task] += 1
+	print("Global production factors ", factors)
+	print("Current tasks: ", current_tasks)
