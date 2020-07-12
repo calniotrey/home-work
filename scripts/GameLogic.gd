@@ -36,7 +36,7 @@ const TIME_DEBUG_CONSTANT   = 10
 const TIME_MEETING_CONSTANT = 10
 
 const PRODUCTION_CONSTANT = 0.5
-const RATIO_PRODUCTION_TO_DEBUG = 0.5
+const RATIO_PRODUCTION_TO_DEBUG = 0.9
 
 const P_DISTURBED_REMOVED   = 0.01
 const P_SATISFIED_REMOVED   = 0.01
@@ -155,7 +155,7 @@ func get_global_production_factors():
 		exp(- (ARCHI_THRESHOLD - time_spent_on_archi) / TIME_ARCHI_CONSTANT)
 	)
 
-	factors['debug'] = min(1, exp(-1 * (to_debug - debugging_done)))
+	factors['debug'] = min(1, exp(-1 * (to_debug - debugging_done) / TIME_DEBUG_CONSTANT))
 
 
 	factors['meeting'] = (0.5 + exp(-time_since_last_emergency_meeting / TIME_MEETING_CONSTANT))
@@ -196,7 +196,7 @@ func compute_production(delta):
 	var prod = 0.0
 	for coworker in coworkers_list:
 		if coworker.current_task == 'debug':
-			debugging_done += coworker.time_spent_on_current_task * coworker.skill
+			debugging_done += delta * coworker.skill
 			debugging_done = min(debugging_done, to_debug)
 
 		var rp = coworker.get_raw_production()
